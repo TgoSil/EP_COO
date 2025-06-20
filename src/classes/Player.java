@@ -4,11 +4,15 @@ import java.util.*;
 
 public class Player extends Atores implements Entidade{
 
+	private Boolean invulneravel = false;
+	private double inicioInvulneravel = 0;
+	private double fimInvulneravel = 0;
+	
 	public Player(double x, double y, double vx, double vy, double raio, long proxTiro){
 		super(x, y, vx, vy);
 		this.proxTiro = proxTiro;
 		this.inicioExplosao = 0;
-		this.fimExplosao = 0;
+		this.fimExplosao = 0;	
 		this.raio = raio;
 	}
 
@@ -18,6 +22,10 @@ public class Player extends Atores implements Entidade{
 
 	public boolean getExplodindo(){
 		return this.explodindo;
+	}
+
+	public boolean getInvulneravel(){
+		return this.invulneravel;
 	}
 
 	//Colisões com atores
@@ -68,7 +76,8 @@ public class Player extends Atores implements Entidade{
 				GameLib.drawExplosion(ponto.getX(), ponto.getY(), alpha);
 			}
 			else{
-				GameLib.setColor(Color.BLUE);
+				if (!invulneravel) GameLib.setColor(Color.BLUE);
+				else GameLib.setColor(Color.GREEN);
 				GameLib.drawPlayer(ponto.getX(), ponto.getY(), raio);
 			}
 	}
@@ -77,18 +86,24 @@ public class Player extends Atores implements Entidade{
 	public boolean atualizaEstado(long deltaTime, long currentTime, double PlayerY) {
 		
 		if (!explodindo) {
-			if(GameLib.iskeyPressed(GameLib.KEY_UP) && ponto.getY() > GameLib.HEIGHT*0.075) mover_Cima(deltaTime);
-			if(GameLib.iskeyPressed(GameLib.KEY_DOWN) && ponto.getY() < GameLib.HEIGHT*0.95) mover_Baixo(deltaTime);
+			if(GameLib.iskeyPressed(GameLib.KEY_UP) && ponto.getY() > GameLib.HEIGHT*0.06) mover_Cima(deltaTime);
+			if(GameLib.iskeyPressed(GameLib.KEY_DOWN) && ponto.getY() < GameLib.HEIGHT*0.975) mover_Baixo(deltaTime);
 			if(GameLib.iskeyPressed(GameLib.KEY_LEFT) && ponto.getX() > GameLib.WIDTH*0.05) mover_Esquerda(deltaTime);
 			if(GameLib.iskeyPressed(GameLib.KEY_RIGHT) && ponto.getX() < GameLib.WIDTH*0.95) mover_Direita(deltaTime);
-
 			if(GameLib.iskeyPressed(GameLib.KEY_CONTROL)) dispara(currentTime, 0.0);
 		}
 		
 		if(this.explodindo && currentTime>this.fimExplosao) {
 			this.explodindo = false;
+			this.invulneravel = true;
+			this.inicioInvulneravel = currentTime;
+			this.fimInvulneravel = currentTime + 1000;
 			ponto.setX(GameLib.WIDTH/2);	
 			ponto.setY(GameLib.HEIGHT*0.9);
+		}
+
+		if (this.invulneravel && currentTime>this.fimInvulneravel) {
+			this.invulneravel = false;
 		}
 
 		int aux = 0;
@@ -99,15 +114,6 @@ public class Player extends Atores implements Entidade{
 		if(aux==1){
 			this.listaProjeteis.remove();
 		}
-		
-		/*
-		for (Projetil projetilAux : this.listaProjeteis) {
-            boolean aux = projetilAux.atualizaEstado(deltaTime, currentTime, PlayerY);
-            if(!aux){
-				this.listaProjeteis.remove(projetilAux);
-				break;
-			}
-        }*/
 
 		return true;
 
