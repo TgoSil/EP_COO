@@ -1,5 +1,4 @@
 import classes.*;
-import java.awt.Color;
 import java.util.*;
 
 public class Main {
@@ -24,11 +23,15 @@ public static void main(String [] args)
 		 /*declaração das variáveis player */
 		 // coordenada x, coordenada y, velocidade no eixo x, velocidade no eixo y, raio do player, tempo do próximo tiro.
 		Player player = new Player(GameLib.WIDTH / 2, GameLib.HEIGHT * 0.90, 0.25, 0.25, 12.0, currentTime); 
-		LinkedList<Inimigos> inimigos = new LinkedList();
-		
-		
+		/*
+		LinkedList<Inimigo1> inimigos1 = new LinkedList();
+		inimigos1.add(new Inimigo1(Math.random() * (GameLib.WIDTH - 20.0) + 10.0, -10.0, 0.20 + Math.random() * 0.15, 0.20 + Math.random() * 0.15, (3 * Math.PI) / 2, 0.0));
+		*/
+		LinkedList<Entidade> Entidade = new LinkedList();
+		Entidade.add(new Inimigo1(Math.random() * (GameLib.WIDTH - 20.0) + 10.0, -10.0, 0.20 + Math.random() * 0.15, 0.20 + Math.random() * 0.15, (3 * Math.PI) / 2, 0.0));
+		Entidade.add(new Inimigo2(Math.random() * (GameLib.WIDTH - 20.0) + 10.0, -10.0, 0.20 + Math.random() * 0.15, 0.20 + Math.random() * 0.15, (3 * Math.PI) / 2, 0.0));
 
-		/* estrelas */
+		/*declaração e inicialização das estrelas */
 		ArrayList<Estrela> estrelaPlano1 = new ArrayList<>();
 		ArrayList<Estrela> estrelaPlano2 = new ArrayList<>();
 		
@@ -39,18 +42,6 @@ public static void main(String [] args)
 		for (int i = 0; i < 20; i++){
 		estrelaPlano2.add(new EstrelaPlano2());
 		}
-
-		for (Estrela estrela : estrelaPlano1) {
-			estrela.mover();
-			estrela.desenhar();
-
-		for (Estrela estrela : estrelaPlano2) {
-			estrela.mover();
-			estrela.desenhar();
-		}
-
-		
-	
 		
 		
 		/* iniciado interface gráfica */
@@ -78,20 +69,30 @@ public static void main(String [] args)
 		while(running){
 			delta = System.currentTimeMillis() - currentTime;
 			currentTime = System.currentTimeMillis();
-			// player.desenha(delta);
+			player.desenha(delta);
+			player.atualizaEstado(delta, currentTime, 0);
+
+			for (Entidade ini1 : Entidade) {
+				ini1.desenha(delta);
+				ini1.atualizaEstado(delta, currentTime, player.getY());
+			}
+			
+			/* estrela */
+			for (Estrela estrela1 : estrelaPlano1) {
+				estrela1.mover();
+				estrela1.desenhar();
+			}
+
+			for (Estrela estrela2 : estrelaPlano2) {
+				estrela2.mover();
+				estrela2.desenhar();
+			}
 
 			/* chamada a display() da classe GameLib atualiza o desenho exibido pela interface do jogo. */
 			GameLib.display();
 
 			/* faz uma pausa de modo que cada execução do laço do main loop demore aproximadamente 3 ms. */
 			busyWait(currentTime + 3);
-
-			
-			/* desenhando plano de fundo próximo */
-			
-			GameLib.setColor(Color.GRAY);
-			GameLib.drawCircle(10, 10, 10);
-			
 						
 		}
 

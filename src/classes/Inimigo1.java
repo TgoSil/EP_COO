@@ -1,6 +1,5 @@
 package classes;
 import java.awt.Color;
-import java.util.*;
 
 public class Inimigo1 extends Inimigos implements Entidade {
 
@@ -31,13 +30,15 @@ public class Inimigo1 extends Inimigos implements Entidade {
 				
 		dispara(currentTime, playerY);
 
-		Iterator<Projetil> p = this.listaProjeteis.iterator();
-		while(p.hasNext()){
-			
-			Projetil projetilAux = p.next();
-			boolean aux = projetilAux.atualizaEstado(deltaTime, currentTime, playerY);
-			if(!aux) this.listaProjeteis.remove(projetilAux);
+		int aux = 0;
+        for (Projetil projetilAux : this.listaProjeteis) {
+            if(!projetilAux.atualizaEstado(deltaTime, currentTime, playerY)) aux = 1;
+            projetilAux.desenha(currentTime);
+        }
+		if(aux==1){
+			this.listaProjeteis.remove();
 		}
+		
 		return true;
     }
 

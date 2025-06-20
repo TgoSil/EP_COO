@@ -9,6 +9,11 @@ public class Player extends Atores implements Entidade{
 		this.proxTiro = proxTiro;
 		this.inicioExplosao = 0;
 		this.fimExplosao = 0;
+		this.raio = raio;
+	}
+
+	public double getY(){
+		return this.ponto.getY();
 	}
 
 	public void colision(long currentTime, LinkedList<Atores> ator) {
@@ -30,16 +35,16 @@ public class Player extends Atores implements Entidade{
 	}
 
 	public void mover_Cima(long delta) {
-		ponto.setY(ponto.getY() + ponto.getvY()*delta);
+		ponto.setY(ponto.getY() - ponto.getvY()*delta);
 	}
 	public void mover_Direita(long delta) {
-		ponto.setY(ponto.getX() + ponto.getvX()*delta);
+		ponto.setX(ponto.getX() + ponto.getvX()*delta);
 	}
 	public void mover_Esquerda(long delta) {
-		ponto.setY(ponto.getY() - ponto.getvX()*delta);
+		ponto.setX(ponto.getX() - ponto.getvX()*delta);
 	}
 	public void mover_Baixo(long delta) {
-		ponto.setY(ponto.getY() - ponto.getvY()*delta);
+		ponto.setY(ponto.getY() + ponto.getvY()*delta);
 	}
 
 	@Override
@@ -75,13 +80,24 @@ public class Player extends Atores implements Entidade{
 
 		if(this.explodindo && currentTime>this.fimExplosao) this.explodindo = false;
 
-		Iterator<Projetil> p = this.listaProjeteis.iterator();
-		while(p.hasNext()){
-			
-			Projetil projetilAux = p.next();
-			boolean aux = projetilAux.atualizaEstado(deltaTime, currentTime, PlayerY);
-			if(!aux) this.listaProjeteis.remove(projetilAux);
+		int aux = 0;
+        for (Projetil projetilAux : this.listaProjeteis) {
+            if(!projetilAux.atualizaEstado(deltaTime, currentTime, PlayerY)) aux = 1;
+            projetilAux.desenha(currentTime);
+        }
+		if(aux==1){
+			this.listaProjeteis.remove();
 		}
+		
+		/*
+		for (Projetil projetilAux : this.listaProjeteis) {
+            boolean aux = projetilAux.atualizaEstado(deltaTime, currentTime, PlayerY);
+            if(!aux){
+				this.listaProjeteis.remove(projetilAux);
+				break;
+			}
+        }*/
+
 		return true;
 
 	}

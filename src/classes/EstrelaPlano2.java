@@ -1,7 +1,7 @@
 package classes;
 import java.awt.Color;
 
-class EstrelaPlano2 extends Estrela {
+public class EstrelaPlano2 extends Estrela {
     public EstrelaPlano2(){
         super(Math.random() * GameLib.WIDTH, Math.random() * GameLib.HEIGHT, 0.070 );
     }

@@ -1,5 +1,4 @@
 package classes;
-import java.awt.Color;
 
 public abstract class Estrela {
     protected double x;
@@ -25,6 +24,7 @@ public abstract class Estrela {
 
 }
 
+/*
 class EstrelaPlano1 extends Estrela {
     public EstrelaPlano1(){
         super(Math.random() * GameLib.WIDTH, Math.random() * GameLib.HEIGHT, 0.045 );
@@ -53,3 +53,4 @@ class EstrelaPlano2 extends Estrela {
     }
 
 }
+*/
