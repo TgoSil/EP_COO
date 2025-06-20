@@ -1,72 +1,8 @@
+package classes;
 import java.awt.Color;
 import java.util.*;
 
-public class Inimigos extends Atores{
-
-	double angulo;
-	double vR;
-	
-	public Inimigos(double x, double y, double vx, double vy, double angulo, double vR){
-		super(x, y, vx, vy);
-		this.angulo = angulo;
-		this.vR = vR;
-	}
-	
-	@Override
-	public void dispara(long currentTime, double playerY){
-		
-		if(currentTime > this.proxTiro && this.ponto.getY() < playerY){
-				
-			this.listaProjeteis.add(new ProjetilInimigo(this.ponto.getX(), this.ponto.getY(), Math.cos(this.angulo)*0.45, Math.sin(this.angulo)*0.45*(-1.0)));
-								
-			this.proxTiro = (long) (currentTime + 200 + Math.random() * 500);
-
-		}
-		
-	}
-	
-}
-
-class Inimigo1 extends Inimigos implements Entidade {
-
-	private double raio = 9.0;
-
-	public Inimigo1 (double x, double y, double vx, double vy, double angulo, double vR){
-		super(x, y, vx, vy, angulo, vR);
-	}
-
-	@Override
-    public void desenha(long currentTime){
-
-        if(this.explodindo){	
-			double alpha = (currentTime - this.inicioExplosao) / (this.fimExplosao - this.inicioExplosao);
-			GameLib.drawExplosion(this.ponto.getX(), this.ponto.getY(), alpha);
-		}else{
-			GameLib.setColor(Color.CYAN);
-			GameLib.drawCircle(this.ponto.getX(), this.ponto.getY(), this.raio);
-		}
-
-    }
-
-    @Override
-    public boolean atualizaEstado(long deltaTime, long currentTime){
-		this.ponto.setX(this.ponto.getX() + this.ponto.getvX()*Math.cos(this.angulo) * deltaTime);
-		this.ponto.setY(this.ponto.getY() + this.ponto.getvY()*Math.cos(this.angulo) * deltaTime * (-1.0));
-		this.angulo += this.vR*deltaTime;
-				
-		Iterator<Projetil> p = this.listaProjeteis.iterator();
-		while(p.hasNext()){
-			
-			Projetil projetilAux = p.next();
-			boolean aux = projetilAux.atualizaEstado(deltaTime, currentTime);
-			if(!aux) this.listaProjeteis.remove(projetilAux);
-		}
-		return true;
-    }
-
-}
-
-class Inimigo2 extends Inimigos implements Entidade {
+public class Inimigo2 extends Inimigos implements Entidade {
 
 	private double raio = 12.0;
 	private boolean shootNow;
@@ -108,7 +44,7 @@ class Inimigo2 extends Inimigos implements Entidade {
     }
 
     @Override
-    public boolean atualizaEstado(long deltaTime, long currentTime){
+    public boolean atualizaEstado(long deltaTime, long currentTime, double PlayerY){
 		this.shootNow = false;
 		double previousY = this.ponto.getY();
 		
@@ -144,11 +80,10 @@ class Inimigo2 extends Inimigos implements Entidade {
 		while(p.hasNext()){
 			
 			Projetil projetilAux = p.next();
-			boolean aux = projetilAux.atualizaEstado(deltaTime, currentTime);
+			boolean aux = projetilAux.atualizaEstado(deltaTime, currentTime, PlayerY);
 			if(!aux) this.listaProjeteis.remove(projetilAux);
 		}
 		return true;
 
     }
-
 }

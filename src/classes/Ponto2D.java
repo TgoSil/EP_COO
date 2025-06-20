@@ -1,3 +1,4 @@
+package classes;
 public class Ponto2D {
 	
 	private double X;

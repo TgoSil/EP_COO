@@ -1,5 +1,5 @@
+package classes;
 import java.util.*;
-// import new.GameLib;
 
 public abstract class Atores{
     protected Ponto2D ponto;

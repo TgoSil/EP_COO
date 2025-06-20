@@ -1,3 +1,5 @@
+package classes;
+import java.awt.Color;
 
 public abstract class Estrela {
     protected double x;
@@ -23,7 +25,7 @@ public abstract class Estrela {
 
 }
 
-public class EstrelaPlano1 extends Estrela {
+class EstrelaPlano1 extends Estrela {
     public EstrelaPlano1(){
         super(Math.random() * GameLib.WIDTH, Math.random() * GameLib.HEIGHT, 0.045 );
     }
@@ -37,7 +39,7 @@ public class EstrelaPlano1 extends Estrela {
 
 }
 
-public class EstrelaPlano2 extends Estrela {
+class EstrelaPlano2 extends Estrela {
     public EstrelaPlano2(){
         super(Math.random() * GameLib.WIDTH, Math.random() * GameLib.HEIGHT, 0.070 );
     }
@@ -51,32 +53,3 @@ public class EstrelaPlano2 extends Estrela {
     }
 
 }
-
-
-/*
-para declarar na main
-Estrela[] estrelasFundo = new EstrelaPlano1[50]; 
-Estrela[] estrelasFrente = new EstrelaPlano2[20]; 
-
-//Inicialização
-for(int i = 0; i < estrelasFundo.length; i++) {
-    estrelasFundo[i] = new EstrelaPlano1();
-}
-
-for(int i = 0; i < estrelasFrente.length; i++) {
-    estrelasFrente[i] = new EstrelaPlano2();
-}
-
-//No loop do game
-for(Estrela estrela : estrelasFundo) {
-    estrela.mover();
-    estrela.desenhar();
-}
-
-for(Estrela estrela : estrelasFrente) {
-    estrela.mover();
-    estrela.desenhar();
-}
-
-    
-*/

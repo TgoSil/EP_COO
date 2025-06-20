@@ -1,4 +1,7 @@
+package classes;
+
 import java.awt.Color;
+
 //classe Projetil
 public abstract class Projetil implements Entidade{
 	protected Ponto2D ponto;
@@ -25,7 +28,7 @@ public abstract class Projetil implements Entidade{
     public abstract void desenha(long currentTime);
 
     @Override
-    public abstract boolean atualizaEstado(long deltaTime);
+    public abstract boolean atualizaEstado(long deltaTime, long currentTime, double PlayerY);
 
 }
 
@@ -49,7 +52,7 @@ class Projetilplayer extends Projetil implements Entidade {
     }
 
     @Override
-    public boolean atualizaEstado(long deltaTime){
+    public boolean atualizaEstado(long deltaTime, long currentTime, double PlayerY){
         this.ponto.setX(this.ponto.getX() + this.ponto.getvX() * deltaTime);
         this.ponto.setY(this.ponto.getY() + this.ponto.getvY() * deltaTime);
         if(this.ponto.getY() < 0) return false;
@@ -75,7 +78,7 @@ class ProjetilInimigo extends Projetil implements Entidade {
 	}
 
     @Override
-    public boolean atualizaEstado(long deltaTime){
+    public boolean atualizaEstado(long deltaTime, long currentTime, double PlayerY){
         this.ponto.setX(this.ponto.getX() + this.ponto.getvX() * deltaTime);
         this.ponto.setY(this.ponto.getY() + this.ponto.getvY() * deltaTime);
         if(this.ponto.getY() > GameLib.HEIGHT) return false;
@@ -83,4 +86,3 @@ class ProjetilInimigo extends Projetil implements Entidade {
     }
     
 }
-
