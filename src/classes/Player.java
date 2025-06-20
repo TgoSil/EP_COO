@@ -16,8 +16,13 @@ public class Player extends Atores implements Entidade{
 		return this.ponto.getY();
 	}
 
-	public void colision(long currentTime, LinkedList<Atores> ator) {
-		for (Atores aux : ator) {
+	public boolean getExplodindo(){
+		return this.explodindo;
+	}
+
+	//Colisões com atores
+	public void colision(long currentTime, LinkedList<Inimigos> ator) {
+		for (Inimigos aux : ator) {
 			double dx = aux.ponto.getX() - this.ponto.getX();
 			double dy = aux.ponto.getY() - this.ponto.getY();
 			double dist = Math.sqrt(dx*dx + dy*dy);
@@ -71,14 +76,20 @@ public class Player extends Atores implements Entidade{
 	@Override
 	public boolean atualizaEstado(long deltaTime, long currentTime, double PlayerY) {
 		
-		if(GameLib.iskeyPressed(GameLib.KEY_UP)) mover_Cima(deltaTime);
-		if(GameLib.iskeyPressed(GameLib.KEY_DOWN)) mover_Baixo(deltaTime);
-		if(GameLib.iskeyPressed(GameLib.KEY_LEFT)) mover_Esquerda(deltaTime);
-		if(GameLib.iskeyPressed(GameLib.KEY_RIGHT)) mover_Direita(deltaTime);
+		if (!explodindo) {
+			if(GameLib.iskeyPressed(GameLib.KEY_UP) && ponto.getY() > GameLib.HEIGHT*0.075) mover_Cima(deltaTime);
+			if(GameLib.iskeyPressed(GameLib.KEY_DOWN) && ponto.getY() < GameLib.HEIGHT*0.95) mover_Baixo(deltaTime);
+			if(GameLib.iskeyPressed(GameLib.KEY_LEFT) && ponto.getX() > GameLib.WIDTH*0.05) mover_Esquerda(deltaTime);
+			if(GameLib.iskeyPressed(GameLib.KEY_RIGHT) && ponto.getX() < GameLib.WIDTH*0.95) mover_Direita(deltaTime);
 
-		if(GameLib.iskeyPressed(GameLib.KEY_CONTROL)) dispara(currentTime, 0.0);
-
-		if(this.explodindo && currentTime>this.fimExplosao) this.explodindo = false;
+			if(GameLib.iskeyPressed(GameLib.KEY_CONTROL)) dispara(currentTime, 0.0);
+		}
+		
+		if(this.explodindo && currentTime>this.fimExplosao) {
+			this.explodindo = false;
+			ponto.setX(GameLib.WIDTH/2);	
+			ponto.setY(GameLib.HEIGHT*0.9);
+		}
 
 		int aux = 0;
         for (Projetil projetilAux : this.listaProjeteis) {

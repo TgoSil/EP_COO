@@ -25,7 +25,7 @@ public class Inimigo1 extends Inimigos implements Entidade {
     @Override
     public boolean atualizaEstado(long deltaTime, long currentTime, double playerY){
 		this.ponto.setX(this.ponto.getX() + this.ponto.getvX()*Math.cos(this.angulo) * deltaTime);
-		this.ponto.setY(this.ponto.getY() + this.ponto.getvY()*Math.cos(this.angulo) * deltaTime * (-1.0));
+		this.ponto.setY(this.ponto.getY() + this.ponto.getvY() * deltaTime * (0.8));
 		this.angulo += this.vR*deltaTime;
 				
 		dispara(currentTime, playerY);

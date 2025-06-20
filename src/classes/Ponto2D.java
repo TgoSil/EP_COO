@@ -7,10 +7,10 @@ public class Ponto2D {
 	private double vY;
 	
 	public Ponto2D (double x, double y, double vX, double vY){
-		setX(x);
-		setY(y);
-		setvX(vX);
-		setvY(vY);
+		this.X=x;
+		this.Y=y;
+		this.vX=vX;
+		this.vY=vY;
 	}
 	
 	public void setX (double x){

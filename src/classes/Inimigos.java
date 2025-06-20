@@ -1,6 +1,6 @@
 package classes;
 
-public class Inimigos extends Atores{
+public abstract class Inimigos extends Atores implements Entidade{
 
 	double angulo;
 	double vR;
@@ -23,6 +23,12 @@ public class Inimigos extends Atores{
 		}
 		
 	}
+
+	@Override
+	public abstract void desenha(long currentTime);
+
+	@Override
+	public abstract boolean atualizaEstado(long deltaTime, long currentTime, double PlayerY);
 	
 }
 
