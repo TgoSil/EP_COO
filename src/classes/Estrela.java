@@ -23,34 +23,3 @@ public abstract class Estrela {
    public abstract void desenhar();
 
 }
-
-/*
-class EstrelaPlano1 extends Estrela {
-    public EstrelaPlano1(){
-        super(Math.random() * GameLib.WIDTH, Math.random() * GameLib.HEIGHT, 0.045 );
-    }
-
-    @Override
-    public void desenhar(){
-        GameLib.setColor(Color.DARK_GRAY);
-        GameLib.fillRect(x, y, 2, 2);
-
-    }
-
-}
-
-class EstrelaPlano2 extends Estrela {
-    public EstrelaPlano2(){
-        super(Math.random() * GameLib.WIDTH, Math.random() * GameLib.HEIGHT, 0.070 );
-    }
-
-    @Override
-
-    public void desenhar(){
-        GameLib.setColor(Color.GRAY);
-        GameLib.fillRect(x, y, 3, 3);
-
-    }
-
-}
-*/

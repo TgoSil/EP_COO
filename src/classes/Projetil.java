@@ -3,7 +3,7 @@ package classes;
 import java.awt.Color;
 
 //classe Projetil
-public abstract class Projetil implements Entidade{
+public abstract class Projetil{
 	protected Ponto2D ponto;
     protected double raio;
     
@@ -24,21 +24,19 @@ public abstract class Projetil implements Entidade{
         return this.raio;
     }
 
-    @Override
     public abstract void desenha(long currentTime);
 
-    @Override
-    public abstract boolean atualizaEstado(long deltaTime, long currentTime, double PlayerY);
+    public abstract boolean atualizaEstado(long deltaTime, long currentTime);
 
 }
 
 //classe ProjetilPlayer que herda Projetil e implementa interface Entidade
 
-class Projetilplayer extends Projetil implements Entidade {
-    private double raio = 0.0;
+class Projetilplayer extends Projetil{
 
     public Projetilplayer(double x, double y, double vx, double vy){
         super(x, y, vx, vy);
+        this.raio = 0.0;
     }
     
     @Override
@@ -52,22 +50,22 @@ class Projetilplayer extends Projetil implements Entidade {
     }
 
     @Override
-    public boolean atualizaEstado(long deltaTime, long currentTime, double PlayerY){
+    public boolean atualizaEstado(long deltaTime, long currentTime){
         this.ponto.setX(this.ponto.getX() + this.ponto.getvX() * deltaTime);
         this.ponto.setY(this.ponto.getY() + this.ponto.getvY() * deltaTime);
-        if(this.ponto.getY() < 0) return false;
-	    else return true;
+        if(this.ponto.getY() < 0 || this.ponto.getX() > GameLib.WIDTH || this.ponto.getX() < 0) return false;
+	    return true;
     }
 
 }
 
 //classe ProjetilInimigo (de inimigo 1) que herda Projetil e implementa interface Entidade
 
-class ProjetilInimigo extends Projetil implements Entidade {
-    private double raio = 2.0;
+class ProjetilInimigo extends Projetil{
 
     public ProjetilInimigo (double x, double y, double vx, double vy){
         super(x, y, vx, vy);
+        this.raio = 2.0;
     }
     
     @Override
@@ -78,11 +76,11 @@ class ProjetilInimigo extends Projetil implements Entidade {
 	}
 
     @Override
-    public boolean atualizaEstado(long deltaTime, long currentTime, double PlayerY){
+    public boolean atualizaEstado(long deltaTime, long currentTime){
         this.ponto.setX(this.ponto.getX() + this.ponto.getvX() * deltaTime);
         this.ponto.setY(this.ponto.getY() + this.ponto.getvY() * deltaTime);
-        if(this.ponto.getY() > GameLib.HEIGHT) return false;
-	    else return true;
+        if(this.ponto.getY() > GameLib.HEIGHT || this.ponto.getX() > GameLib.WIDTH || this.ponto.getX() < 0) return false;
+	    return true;
     }
     
 }

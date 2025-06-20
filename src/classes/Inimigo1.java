@@ -1,12 +1,12 @@
 package classes;
 import java.awt.Color;
+import java.util.*;
 
-public class Inimigo1 extends Inimigos implements Entidade {
+public class Inimigo1 extends Inimigos {
 
-	private double raio = 9.0;
-
-	public Inimigo1 (double x, double y, double vx, double vy, double angulo, double vR){
-		super(x, y, vx, vy, angulo, vR);
+	public Inimigo1 (double x, double y, double vx, double vy, double angulo, double vR, LinkedList<Projetil> listaProjeteis){
+		super(x, y, vx, vy, angulo, vR, listaProjeteis);
+		this.raio = 9.0;
 	}
 
 	@Override
@@ -22,7 +22,7 @@ public class Inimigo1 extends Inimigos implements Entidade {
 
     }
 
-    @Override
+	@Override
     public boolean atualizaEstado(long deltaTime, long currentTime, double playerY){
 		this.ponto.setX(this.ponto.getX() + this.ponto.getvX()*Math.cos(this.angulo) * deltaTime);
 		this.ponto.setY(this.ponto.getY() + this.ponto.getvY() * deltaTime * (0.8));
@@ -30,13 +30,9 @@ public class Inimigo1 extends Inimigos implements Entidade {
 				
 		dispara(currentTime, playerY);
 
-		int aux = 0;
-        for (Projetil projetilAux : this.listaProjeteis) {
-            if(!projetilAux.atualizaEstado(deltaTime, currentTime, playerY)) aux = 1;
-            projetilAux.desenha(currentTime);
-        }
-		if(aux==1){
-			this.listaProjeteis.remove();
+		if(this.explodindo && currentTime>this.fimExplosao) {
+			this.explodindo = false;
+			return false;
 		}
 		
 		return true;

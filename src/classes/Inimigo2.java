@@ -2,13 +2,13 @@ package classes;
 import java.awt.Color;
 import java.util.*;
 
-public class Inimigo2 extends Inimigos implements Entidade {
+public class Inimigo2 extends Inimigos {
 
-	private double raio = 12.0;
 	private boolean shootNow;
 
-	public Inimigo2 (double x, double y, double vx, double vy, double angulo, double vR){
-		super(x, y, vx, vy, angulo, vR);
+	public Inimigo2 (double x, double y, double vx, double vy, double angulo, double vR, LinkedList<Projetil> listaProjeteis){
+		super(x, y, vx, vy, angulo, vR, listaProjeteis);
+		this.raio = 12.0;
 	}
 
 	@Override
@@ -40,7 +40,6 @@ public class Inimigo2 extends Inimigos implements Entidade {
 			GameLib.setColor(Color.MAGENTA);
 			GameLib.drawDiamond(this.ponto.getX(), this.ponto.getY(), this.raio);
 		}
-
     }
 
     @Override
@@ -49,7 +48,7 @@ public class Inimigo2 extends Inimigos implements Entidade {
 		double previousY = this.ponto.getY();
 		
 		this.ponto.setX(this.ponto.getX() + this.ponto.getvX()*Math.cos(this.angulo) * deltaTime);
-		this.ponto.setY(this.ponto.getY() + this.ponto.getvY()*Math.cos(this.angulo) * deltaTime * (-1.0));
+		this.ponto.setY(this.ponto.getY() + this.ponto.getvY()*Math.sin(this.angulo) * deltaTime * (-1.0));
 		this.angulo += this.vR*deltaTime;
 						
 		double threshold = GameLib.HEIGHT * 0.30;
@@ -76,13 +75,11 @@ public class Inimigo2 extends Inimigos implements Entidade {
 
 		dispara(currentTime, 0.0);
 
-		Iterator<Projetil> p = this.listaProjeteis.iterator();
-		while(p.hasNext()){
-			
-			Projetil projetilAux = p.next();
-			boolean aux = projetilAux.atualizaEstado(deltaTime, currentTime, PlayerY);
-			if(!aux) this.listaProjeteis.remove(projetilAux);
+		if(this.explodindo && currentTime>this.fimExplosao) {
+			this.explodindo = false;
+			return false;
 		}
+
 		return true;
 
     }

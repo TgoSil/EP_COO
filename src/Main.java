@@ -23,15 +23,10 @@ public static void main(String [] args)
 		 /*declaração das variáveis player */
 		 // coordenada x, coordenada y, velocidade no eixo x, velocidade no eixo y, raio do player, tempo do próximo tiro.
 		Player player = new Player(GameLib.WIDTH / 2, GameLib.HEIGHT * 0.90, 0.25, 0.25, 12.0, currentTime); 
-		/*
-		LinkedList<Inimigo1> inimigos1 = new LinkedList();
-		inimigos1.add(new Inimigo1(Math.random() * (GameLib.WIDTH - 20.0) + 10.0, -10.0, 0.20 + Math.random() * 0.15, 0.20 + Math.random() * 0.15, (3 * Math.PI) / 2, 0.0));
-		*/
+	
+		/*declaracao da  lista de inimigos e projetil*/
 		LinkedList<Inimigos> inimigos = new LinkedList();
-		
-		inimigos.add(new Inimigo1(Math.random() * (GameLib.WIDTH - 20.0) + 10.0, 100.0, 0.20 + Math.random() * 0.15, 0.20 + Math.random() * 0.15, (3 * Math.PI) / 2, 0.0));
-		/*		private static List<inimigo2> inimigos2 = new LinkedList<>();
-    */
+		LinkedList<Projetil> enemyProjetil = new LinkedList();
 		
 		/*declaração e inicialização das estrelas */
 		ArrayList<Estrela> estrelaPlano1 = new ArrayList<>();
@@ -45,10 +40,17 @@ public static void main(String [] args)
 		estrelaPlano2.add(new EstrelaPlano2());
 		}
 
-		long nextEnemy2 = currentTime + 1000;
+		/* variaveis de controle de spawn dos inimigos*/
+		long nextEnemy1 = currentTime + 2000;
+		long nextEnemy2 = currentTime + 7000;
 		int enemy2_count = 0;
 		double enemy2_spawnX = GameLib.WIDTH * 0.20;
+
+		boolean pFlag = false;
+		int pIndex = -1;
 		
+		boolean iniFlag = false;
+		int iniIndex = -1;
 		
 		/* iniciado interface gráfica */
 		GameLib.initGraphics();
@@ -73,17 +75,25 @@ public static void main(String [] args)
 		/*                                                                                               */
 		/*************************************************************************************************/
 		while(running){
+			// Variáveis básicas de tempo
 			delta = System.currentTimeMillis() - currentTime;
 			currentTime = System.currentTimeMillis();
 
-			player.atualizaEstado(delta, currentTime, 0);
+			/* Métodos de player */
+			player.atualizaEstado(delta, currentTime);
 			player.desenha(currentTime);
-			if (!player.getExplodindo()) player.colision(currentTime, inimigos);
+			if (!player.getExplodindo() && !player.getInvulneravel()) player.colision(currentTime, inimigos);
 			
-			/* inimigo 2 */
+			/*spawn inimigo 1 */
+			if(currentTime > nextEnemy1){
+				inimigos.add(new Inimigo1(Math.random() * (GameLib.WIDTH - 20.0) + 10.0, 10.0, 0.20 + Math.random() * 0.15, 0.20 + Math.random() * 0.15, (3 * Math.PI) / 2, 0.0, enemyProjetil));
+				nextEnemy1 = currentTime + 500;
+			}
+
+			/*spawn inimigo 2 */
 			if(currentTime > nextEnemy2){
-				System.out.println("OIEEE");
-				inimigos.add(new Inimigo2(enemy2_spawnX, -100.0, 0.42, 0.42, (3 * Math.PI) / 2, 0.0));
+				
+				inimigos.add(new Inimigo2(enemy2_spawnX, -20, 0.42, 0.42, (3 * Math.PI) / 2, 0.0, enemyProjetil));
 				enemy2_count++;
 
 				if(enemy2_count < 10){
@@ -96,14 +106,36 @@ public static void main(String [] args)
 					nextEnemy2 = (long) (currentTime + 3000 + Math.random() * 3000);
 				}
 			}
+	
 
-			/* inimigo 1 */
-			for (Inimigos ini1 : inimigos) {
-				ini1.desenha(currentTime);
-				ini1.atualizaEstado(delta, currentTime, player.getY());
+			/* gerencia inimigos */
+			for (Inimigos ini : inimigos) {
+				if(!ini.atualizaEstado(delta, currentTime, player.getY())){
+					iniFlag = true;
+					iniIndex = inimigos.indexOf(ini);
+				}
+				ini.desenha(currentTime);			
+				if (!ini.getExplodindo()) ini.colision(player.getProjeteis(), currentTime, 1.0);
+			}
+			if(iniFlag){
+				inimigos.remove(iniIndex);
+				iniFlag = false;
 			}
 			
-			/* estrelas */
+			/* gerencia projeteis inimigos (atualiza, desenha e remove) */
+			for (Projetil p : enemyProjetil) {
+				if(!p.atualizaEstado(delta, currentTime)){
+					pFlag = true;
+					pIndex = enemyProjetil.indexOf(p);
+				}
+				p.desenha(currentTime);
+			}
+			if(pFlag){
+				enemyProjetil.remove(pIndex);
+				pFlag = false;
+			}
+			
+			/*instanciando e desenhando estrelas */
 			for (Estrela estrela1 : estrelaPlano1) {
 				estrela1.mover();
 				estrela1.desenhar();

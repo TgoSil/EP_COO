@@ -19,25 +19,26 @@ public abstract class Atores{
 		this.proxTiro = 0;
 	}
 
+	public boolean getExplodindo(){
+		return this.explodindo;
+	}
+
    //metodos colisao e disparar
-    protected boolean colision(LinkedList<Projetil> projeteis, long currentTime, double c){
-
-		Iterator<Projetil> p = projeteis.iterator();
-		while(p.hasNext()){
-
-			Projetil projetil = p.next();
-			double dx = projetil.getX() - ponto.getX();
-			double dy = projetil.getY() - ponto.getY();
-			double dist = Math.sqrt(dx * dx + dy * dy);
-			
-			if(dist < ((this.raio + projetil.getRaio()) * c)){				
-				this.explodindo = true;
-				this.inicioExplosao = currentTime;
-				this.fimExplosao = currentTime + 500;
-				return explodindo;
-			}
-			
-		}
+    public boolean colision(LinkedList<Projetil> projeteis, long currentTime, double c){
+		
+        for (Projetil projetil : projeteis) {
+            double dx = projetil.getX() - ponto.getX();
+            double dy = projetil.getY() - ponto.getY();
+            double dist = Math.sqrt(dx * dx + dy * dy);
+            
+            if(dist < ((this.raio + projetil.getRaio()) * c)){
+                
+                this.explodindo = true;
+                this.inicioExplosao = currentTime;
+                this.fimExplosao = currentTime + 500;
+                return explodindo;
+            }
+        }
 		return explodindo;
 	}
     
