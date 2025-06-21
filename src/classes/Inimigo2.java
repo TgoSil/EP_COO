@@ -43,13 +43,15 @@ public class Inimigo2 extends Inimigos {
     }
 
     @Override
-    public boolean atualizaEstado(long deltaTime, long currentTime, double PlayerY){
+    public boolean atualizaEstado(long deltaTime, long currentTime, double PlayerY, LinkedList<Projetil> projetilInimigo){
 		this.shootNow = false;
 		double previousY = this.ponto.getY();
 		
 		this.ponto.setX(this.ponto.getX() + this.ponto.getvX()*Math.cos(this.angulo) * deltaTime);
 		this.ponto.setY(this.ponto.getY() + this.ponto.getvY()*Math.sin(this.angulo) * deltaTime * (-1.0));
 		this.angulo += this.vR*deltaTime;
+						
+		if (!explodindo) colision(projetilInimigo, currentTime, 1.0);				
 						
 		double threshold = GameLib.HEIGHT * 0.30;
 						

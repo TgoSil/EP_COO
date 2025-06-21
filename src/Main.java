@@ -80,9 +80,9 @@ public static void main(String [] args)
 			currentTime = System.currentTimeMillis();
 
 			/* Métodos de player */
-			player.atualizaEstado(delta, currentTime);
+			player.atualizaEstado(delta, currentTime, inimigos);
 			player.desenha(currentTime);
-			if (!player.getExplodindo() && !player.getInvulneravel()) player.colision(currentTime, inimigos);
+
 			
 			/*spawn inimigo 1 */
 			if(currentTime > nextEnemy1){
@@ -107,15 +107,13 @@ public static void main(String [] args)
 				}
 			}
 	
-
 			/* gerencia inimigos */
 			for (Inimigos ini : inimigos) {
-				if(!ini.atualizaEstado(delta, currentTime, player.getY())){
+				if(!ini.atualizaEstado(delta, currentTime, player.getY(), player.getProjeteis())){
 					iniFlag = true;
 					iniIndex = inimigos.indexOf(ini);
 				}
-				ini.desenha(currentTime);			
-				if (!ini.getExplodindo()) ini.colision(player.getProjeteis(), currentTime, 1.0);
+				ini.desenha(currentTime);
 			}
 			if(iniFlag){
 				inimigos.remove(iniIndex);

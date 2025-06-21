@@ -27,6 +27,6 @@ public abstract class Inimigos extends Atores {
 
 	public abstract void desenha(long currentTime);
 
-	public abstract boolean atualizaEstado(long deltaTime, long currentTime, double PlayerY);
+	public abstract boolean atualizaEstado(long deltaTime, long currentTime, double PlayerY, LinkedList<Projetil> projetilInimigo);
 	
 }

@@ -23,11 +23,13 @@ public class Inimigo1 extends Inimigos {
     }
 
 	@Override
-    public boolean atualizaEstado(long deltaTime, long currentTime, double playerY){
+    public boolean atualizaEstado(long deltaTime, long currentTime, double playerY, LinkedList<Projetil> projetilInimigo){
 		this.ponto.setX(this.ponto.getX() + this.ponto.getvX()*Math.cos(this.angulo) * deltaTime);
 		this.ponto.setY(this.ponto.getY() + this.ponto.getvY() * deltaTime * (0.8));
 		this.angulo += this.vR*deltaTime;
-				
+
+		if (!explodindo) colision(projetilInimigo, currentTime, 1.0);				
+
 		dispara(currentTime, playerY);
 
 		if(this.explodindo && currentTime>this.fimExplosao) {

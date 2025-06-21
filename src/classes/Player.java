@@ -91,14 +91,16 @@ public class Player extends Atores{
 			}
 	}
 
-	public boolean atualizaEstado(long deltaTime, long currentTime) {
-		
+	public boolean atualizaEstado(long deltaTime, long currentTime, LinkedList<Inimigos> inimigos) {
+
 		if (!explodindo) {
 			if(GameLib.iskeyPressed(GameLib.KEY_UP) && ponto.getY() > GameLib.HEIGHT*0.06) mover_Cima(deltaTime);
 			if(GameLib.iskeyPressed(GameLib.KEY_DOWN) && ponto.getY() < GameLib.HEIGHT*0.975) mover_Baixo(deltaTime);
 			if(GameLib.iskeyPressed(GameLib.KEY_LEFT) && ponto.getX() > GameLib.WIDTH*0.05) mover_Esquerda(deltaTime);
 			if(GameLib.iskeyPressed(GameLib.KEY_RIGHT) && ponto.getX() < GameLib.WIDTH*0.95) mover_Direita(deltaTime);
 			if(GameLib.iskeyPressed(GameLib.KEY_CONTROL)) dispara(currentTime, 0.0);
+
+			if (!invulneravel) colision(currentTime, inimigos);
 		}
 		
 		if(this.explodindo && currentTime>this.fimExplosao) {
