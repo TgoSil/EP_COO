@@ -51,9 +51,12 @@ class Projetilplayer extends Projetil{
 
     @Override
     public boolean atualizaEstado(long deltaTime, long currentTime){
-        this.ponto.setX(this.ponto.getX() + this.ponto.getvX() * deltaTime);
-        this.ponto.setY(this.ponto.getY() + this.ponto.getvY() * deltaTime);
-        if(this.ponto.getY() < 0 || this.ponto.getX() > GameLib.WIDTH || this.ponto.getX() < 0) return false;
+        double y = this.ponto.getY() + this.ponto.getvY() * deltaTime;
+        double x = this.ponto.getX() + this.ponto.getvX() * deltaTime;
+        if(y < 0 || x > GameLib.WIDTH || x < 0) return false;
+        this.ponto.setX(x);
+        this.ponto.setY(y);
+        
 	    return true;
     }
 
@@ -77,10 +80,15 @@ class ProjetilInimigo extends Projetil{
 
     @Override
     public boolean atualizaEstado(long deltaTime, long currentTime){
-        this.ponto.setX(this.ponto.getX() + this.ponto.getvX() * deltaTime);
-        this.ponto.setY(this.ponto.getY() + this.ponto.getvY() * deltaTime);
-        if(this.ponto.getY() > GameLib.HEIGHT || this.ponto.getX() > GameLib.WIDTH || this.ponto.getX() < 0) return false;
+        double y = this.ponto.getY() + this.ponto.getvY() * deltaTime;
+        double x = this.ponto.getX() + this.ponto.getvX() * deltaTime;
+        if(y > GameLib.HEIGHT || x > GameLib.WIDTH || x < 0) return false;
+        this.ponto.setX(x);
+        this.ponto.setY(y);
 	    return true;
     }
-    
+
+
+
 }
+
