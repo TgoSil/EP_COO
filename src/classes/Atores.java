@@ -14,7 +14,7 @@ public abstract class Atores{
 
 	public Atores (double x, double y, double vx, double vy){
     	this.ponto = new Ponto2D(x, y, vx, vy);
-    	this.listaProjeteis = new LinkedList<>();
+    	// this.listaProjeteis = new LinkedList<>();
     	this.explodindo = false;   
 		this.proxTiro = 0;
 	}

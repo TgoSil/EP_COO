@@ -7,7 +7,7 @@ public abstract class Projetil{
 	protected Ponto2D ponto;
     protected double raio;
     
-	public Projetil(double x, double y, double vx, double vy){
+	protected Projetil(double x, double y, double vx, double vy){
 		this.ponto = new Ponto2D(x, y, vx, vy);
 	}
 
@@ -34,7 +34,7 @@ public abstract class Projetil{
 
 class Projetilplayer extends Projetil{
 
-    public Projetilplayer(double x, double y, double vx, double vy){
+    protected Projetilplayer(double x, double y, double vx, double vy){
         super(x, y, vx, vy);
         this.raio = 0.0;
     }
@@ -63,7 +63,7 @@ class Projetilplayer extends Projetil{
 
 class ProjetilInimigo extends Projetil{
 
-    public ProjetilInimigo (double x, double y, double vx, double vy){
+    protected ProjetilInimigo (double x, double y, double vx, double vy){
         super(x, y, vx, vy);
         this.raio = 2.0;
     }

@@ -7,12 +7,13 @@ public class Player extends Atores{
 	private Boolean invulneravel = false;
 	private double fimInvulneravel = 0;
 	
-	public Player(double x, double y, double vx, double vy, double raio, long proxTiro){
+	public Player(double x, double y, double vx, double vy, double raio, long proxTiro, LinkedList<Projetil> listaProjetil){
 		super(x, y, vx, vy);
 		this.proxTiro = proxTiro;
 		this.inicioExplosao = 0;
 		this.fimExplosao = 0;	
 		this.raio = raio;
+		this.listaProjeteis = listaProjetil;
 	}
 
 	public double getY(){

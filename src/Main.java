@@ -20,9 +20,10 @@ public static void main(String [] args)
 		long delta;
 		long currentTime = System.currentTimeMillis();
 
-		 /*declaração das variáveis player */
-		 // coordenada x, coordenada y, velocidade no eixo x, velocidade no eixo y, raio do player, tempo do próximo tiro.
-		Player player = new Player(GameLib.WIDTH / 2, GameLib.HEIGHT * 0.90, 0.25, 0.25, 12.0, currentTime); 
+		/*declaração das variáveis player */
+		// coordenada x, coordenada y, velocidade no eixo x, velocidade no eixo y, raio do player, tempo do próximo tiro.
+		LinkedList<Projetil> playerProjetil = new LinkedList();
+		Player player = new Player(GameLib.WIDTH / 2, GameLib.HEIGHT * 0.90, 0.25, 0.25, 12.0, currentTime, playerProjetil); 
 	
 		/*declaracao da  lista de inimigos e projetil*/
 		LinkedList<Inimigos> inimigos = new LinkedList();
@@ -83,14 +84,19 @@ public static void main(String [] args)
 			player.atualizaEstado(delta, currentTime, inimigos);
 			player.desenha(currentTime);
 
-			
-			/*spawn inimigo 1 */
+			// TESTE DA SITUAÇÃO PROBLEMA MUITO ESPECIFICA
+			// if(GameLib.iskeyPressed(GameLib.KEY_DOWN)) {
+			// 	inimigos.add(new Inimigo1(GameLib.WIDTH/2.00, 10.0, 0.20 + 0.5, 0.5, (3 * Math.PI) / 2, 0.0, enemyProjetil));
+			// 	inimigos.add(new Inimigo1(GameLib.WIDTH/2.00, 10.0, 0.20 + 0.5, 0.5, (3 * Math.PI) / 2, 0.0, enemyProjetil));
+			// }
+
+			/*spawn inimigo 1 - VAI MUDAR QUANDO TIVER O SCRIPT*/
 			if(currentTime > nextEnemy1){
 				inimigos.add(new Inimigo1(Math.random() * (GameLib.WIDTH - 20.0) + 10.0, 10.0, 0.20 + Math.random() * 0.15, 0.20 + Math.random() * 0.15, (3 * Math.PI) / 2, 0.0, enemyProjetil));
-				nextEnemy1 = currentTime + 500;
+				nextEnemy1 = currentTime +500;
 			}
 
-			/*spawn inimigo 2 */
+			/*spawn inimigo 2 - VAI MUDAR QUANDO TIVER O SCRIPT*/
 			if(currentTime > nextEnemy2){
 				
 				inimigos.add(new Inimigo2(enemy2_spawnX, -20, 0.42, 0.42, (3 * Math.PI) / 2, 0.0, enemyProjetil));
@@ -115,6 +121,7 @@ public static void main(String [] args)
 				}
 				ini.desenha(currentTime);
 			}
+			/* Deleta inimigo morto */
 			if(iniFlag){
 				inimigos.remove(iniIndex);
 				iniFlag = false;
@@ -128,6 +135,8 @@ public static void main(String [] args)
 				}
 				p.desenha(currentTime);
 			}
+			
+			/* Deleta projétil fora da tela */
 			if(pFlag){
 				enemyProjetil.remove(pIndex);
 				pFlag = false;
