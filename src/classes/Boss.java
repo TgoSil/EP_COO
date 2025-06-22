@@ -2,9 +2,9 @@ package classes;
 
 import java.util.LinkedList;
 
-abstract class Boss extends Inimigos{
+public abstract class Boss extends Inimigos{
 
-    protected double vida;
+    protected int vida;
 
     public Boss(double x, double y, double vx, double vy, double angulo, double vR, LinkedList<Projetil> listaProjeteis) {
         super(x, y, vx, vy, angulo, vR, listaProjeteis);
@@ -24,8 +24,6 @@ abstract class Boss extends Inimigos{
         }
         return false;
     }
-
-	public abstract void dispara_alternativo(long currentTime, double playerY);
 
     public abstract void desenha(long currentTime);
 

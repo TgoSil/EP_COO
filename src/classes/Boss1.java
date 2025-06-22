@@ -5,9 +5,14 @@ import java.util.*;
 public class Boss1 extends Boss{
 
     private boolean estado = true; // True = Estado 1 & False == Estado 2
-    private double escudo_vida = 10;
+    private boolean recarregando = false;
+    private int escudo_vida = 750;
+    private int levaDeDisparos;
     private long recriarEscudoTime;
     private long recarregandoTime;
+    private double velocidadeDisparos=0.1;
+    private boolean alternarVelocidadeDisparos = false;
+    private boolean alternarAngulo = false; // Controla a alternância entre os ângulos
 
     public Boss1(double x, double y, double vx, double vy, double angulo, double vR, LinkedList<Projetil> listaProjeteis) {
         super(x, y, vx, vy, angulo, vR, listaProjeteis);
@@ -17,24 +22,61 @@ public class Boss1 extends Boss{
 
     @Override
 	public void dispara(long currentTime, double playerY){
-		
-		if(currentTime > this.proxTiro && this.ponto.getY() < playerY){
-				
-			this.listaProjeteis.add(new ProjetilInimigo(this.ponto.getX(), this.ponto.getY()+this.raio*0.6, Math.cos(this.angulo)*0.45, Math.sin(this.angulo)*0.45*(-1.0)));
-            this.listaProjeteis.add(new ProjetilInimigo(this.ponto.getX(), this.ponto.getY()+this.raio*0.6, Math.cos(this.angulo), Math.sin(this.angulo)*0.45*(-1.0)));
-            // this.listaProjeteis.add(new ProjetilInimigo(this.ponto.getX(), this.ponto.getY()+this.raio*0.6, Math.cos(this.angulo)*0.45, Math.sin(this.angulo)*0.45*(-1.0)));
-								
+
+        if (recarregando && currentTime > recarregandoTime) {
+            recarregando = false;
+            velocidadeDisparos = alternarVelocidadeDisparos ? 0.1 : 0.3;
+            alternarVelocidadeDisparos = !alternarVelocidadeDisparos;
+        }
+
+		if(!this.recarregando &&
+         currentTime > this.proxTiro && this.ponto.getY() < playerY){
+            
+			int numDisparos = 13;
+            double anguloLeque = Math.PI; // 180° de abertura do leque
+            double deslocamento = alternarAngulo ? (Math.PI / 18) : 0;
+            
+            levaDeDisparos += 1;
+            alternarAngulo = !alternarAngulo;
+
+			for (int i = 0; i<numDisparos; i++) {
+                if (i!=numDisparos-1) {
+                    double anguloDeslocamento = -anguloLeque/2 + (anguloLeque*i/(numDisparos - 1));
+
+                    double angulo =  Math.PI / 2 + anguloDeslocamento + deslocamento;
+
+                    double vx = Math.cos(angulo) * velocidadeDisparos;
+                    double vy = Math.sin(angulo) * velocidadeDisparos;
+
+                    this.listaProjeteis.add(new ProjetilInimigo(this.ponto.getX(), this.ponto.getY() + raio*0.6, vx, vy));
+                }
+			}
+
+            if (levaDeDisparos >= 25) {
+                recarregando = true;
+                recarregandoTime = currentTime + 3500;
+                levaDeDisparos = 0;
+            }
 			this.proxTiro = (long) (currentTime + 200);
 
 		}
 	}
-
-    @Override
+    
     public void dispara_alternativo(long currentTime, double playerY) {
-        if(currentTime > this.proxTiro && this.ponto.getY() < playerY) {
-            this.listaProjeteis.add(new ProjetilInimigo(this.ponto.getX(), this.ponto.getY()+this.raio*0.6, Math.cos(this.angulo)*0.45, Math.sin(this.angulo)*0.45*(-1.0)));
-								
-			this.proxTiro = (long) (currentTime + 50);
+        if (recarregando && currentTime > recarregandoTime) recarregando = false;
+
+        if(!recarregando && currentTime > this.proxTiro && this.ponto.getY() < playerY) {
+            if (levaDeDisparos < 5) {
+                this.listaProjeteis.add(new ProjetilInimigo(this.ponto.getX(), 
+            this.ponto.getY()+this.raio*0.6, Math.cos(this.angulo)*0.45, 0.5));
+                this.proxTiro = (long) (currentTime + 100);
+                levaDeDisparos += 1;
+            }
+            else {
+                recarregando = true;
+                recarregandoTime = currentTime + 500;
+                levaDeDisparos = 0;
+            }
         }
     }
 
@@ -63,9 +105,7 @@ public class Boss1 extends Boss{
     }
 
     @Override
-    public boolean atualizaEstado(long deltaTime, long currentTime, double PlayerY, LinkedList<Projetil> projetilPlayer) {
-
-        
+    public boolean atualizaEstado(long deltaTime, long currentTime, double PlayerY, LinkedList<Projetil> projetilPlayer) {        
         if (!explodindo) {
             if (estado) {
                 if (colision(projetilPlayer, currentTime, 1.05)) {
@@ -73,6 +113,9 @@ public class Boss1 extends Boss{
                         estado = false;
                         raio = 70.0;
                         recriarEscudoTime = currentTime + 10000;
+                        recarregando = true;
+                        recarregandoTime = currentTime + 2000;
+                        levaDeDisparos = 0;
                     }
                     else {
                         System.out.println("Escudo: " + escudo_vida);
@@ -82,10 +125,9 @@ public class Boss1 extends Boss{
 
                 
                 // Movimentação
-                if (ponto.getX() + raio >= GameLib.WIDTH || ponto.getX() - raio <= 0) ponto.setvX(ponto.getvX() * (-1));
-                ponto.setX(ponto.getX() + ponto.getvX() * deltaTime * 0.1);
+                ponto.setX(ponto.getX() + ponto.getvX() * deltaTime * 0.2);
+                if (ponto.getX() + 90 >= GameLib.WIDTH || ponto.getX() - 90 <= 0) ponto.setvX(ponto.getvX() * (-1));
                 dispara(currentTime, PlayerY);
-
             }
             else {
                 if (colision(projetilPlayer, currentTime, 1.05)) {
@@ -101,7 +143,7 @@ public class Boss1 extends Boss{
                 }
 
                 if (currentTime > recriarEscudoTime) {
-                    escudo_vida = 100;
+                    escudo_vida = 300;
                     estado = true;
                     raio = 90.0;
                 }
@@ -109,8 +151,8 @@ public class Boss1 extends Boss{
         
                 // Movimentação
                 dispara_alternativo(currentTime, PlayerY);
-                if (ponto.getX() + raio >= GameLib.WIDTH || ponto.getX() - raio <= 0) ponto.setvX(ponto.getvX() * (-1));
-                ponto.setX(ponto.getX() + ponto.getvX() * deltaTime * 3);
+                if (ponto.getX() + 90 >= GameLib.WIDTH || ponto.getX() - 90 <= 0) ponto.setvX(ponto.getvX() * (-1));
+                ponto.setX(ponto.getX() + ponto.getvX() * deltaTime * 2);
             }
         }
         else {

@@ -59,7 +59,7 @@ public class Player extends Atores{
 	@Override
 	public void dispara(long currentTime, double limitador) {
 		
-		if(currentTime > this.proxTiro){				
+		if(currentTime > this.proxTiro && !invulneravel){				
 			this.listaProjeteis.add(new Projetilplayer(this.ponto.getX(), this.ponto.getY()-2*this.raio, 0.0, -1.0));
 			this.proxTiro = currentTime + 100;
 		}
@@ -86,6 +86,7 @@ public class Player extends Atores{
 			if(GameLib.iskeyPressed(GameLib.KEY_RIGHT) && ponto.getX() < GameLib.WIDTH*0.95) mover_Direita(deltaTime);
 			if(GameLib.iskeyPressed(GameLib.KEY_CONTROL)) dispara(currentTime, 0.0);
 
+
 			if (!invulneravel) {
 				if (boss != null) colision(currentTime, boss);
 				for (Inimigos ini : inimigos) {
@@ -97,7 +98,7 @@ public class Player extends Atores{
 		if(this.explodindo && currentTime>this.fimExplosao) {
 			this.explodindo = false;
 			this.invulneravel = true;
-			this.fimInvulneravel = currentTime + 1000;
+			this.fimInvulneravel = currentTime + 2000;
 			ponto.setX(GameLib.WIDTH/2);	
 			ponto.setY(GameLib.HEIGHT*0.9);
 		}
