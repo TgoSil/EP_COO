@@ -21,6 +21,7 @@ public class Inimigo1 extends Inimigos {
 		}
 
     }
+	
 
 	@Override
     public boolean atualizaEstado(long deltaTime, long currentTime, double playerY, LinkedList<Projetil> projetilInimigo){

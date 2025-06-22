@@ -87,6 +87,35 @@ class ProjetilInimigo extends Projetil{
         this.ponto.setY(y);
 	    return true;
     }
+}
+
+    class ProjetilBoss2 extends Projetil{
+        long sumir;
+
+    protected ProjetilBoss2 (double x, double y, double vx, double vy, long currentTime){
+        super(x, y, vx, vy);
+        this.sumir = currentTime + 12500;
+        this.raio = 4.0;
+    }
+    
+    @Override
+    public void desenha(long currentTime)
+    {
+		GameLib.setColor(Color.ORANGE);
+		GameLib.drawCircle(ponto.getX(), ponto.getY(), this.raio);
+	}
+
+    @Override
+    public boolean atualizaEstado(long deltaTime, long currentTime){
+        double y = this.ponto.getY() + this.ponto.getvY() * deltaTime;
+        double x = this.ponto.getX() + this.ponto.getvX() * deltaTime;
+        if(x > GameLib.WIDTH || x < 0) this.ponto.setvX(this.ponto.getvX() * -1); //Altera a direção do ataque 2
+        if(y > GameLib.HEIGHT || y < 0) this.ponto.setvY(this.ponto.getvY() * -1); 
+        this.ponto.setX(x);
+        this.ponto.setY(y);
+        if (currentTime > this.sumir) return false;
+	    return true;
+    }
 
 
 
