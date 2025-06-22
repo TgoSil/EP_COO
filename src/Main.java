@@ -32,6 +32,10 @@ public static void main(String [] args)
 		/*declaração e inicialização das estrelas */
 		ArrayList<Estrela> estrelaPlano1 = new ArrayList<>();
 		ArrayList<Estrela> estrelaPlano2 = new ArrayList<>();
+
+		/*declaração dos powerups*/
+		LinkedList<PowerUp> powerUps = new LinkedList();
+		long proximoPowerUp = 0;	
 		
 		for (int i = 0; i < 50; i++){
 		estrelaPlano1.add(new EstrelaPlano1());
@@ -80,10 +84,21 @@ public static void main(String [] args)
 			delta = System.currentTimeMillis() - currentTime;
 			currentTime = System.currentTimeMillis();
 
+			/*instanciando e desenhando estrelas */
+			for (Estrela estrela1 : estrelaPlano1) {
+				estrela1.mover();
+				estrela1.desenhar();
+			}
+
+			for (Estrela estrela2 : estrelaPlano2) {
+				estrela2.mover();
+				estrela2.desenhar();
+			}
+
 			/* Métodos de player */
 			player.atualizaEstado(delta, currentTime, inimigos);
 			player.desenha(currentTime);
-
+			
 			// TESTE DA SITUAÇÃO PROBLEMA MUITO ESPECIFICA
 			// if(GameLib.iskeyPressed(GameLib.KEY_DOWN)) {
 			// 	inimigos.add(new Inimigo1(GameLib.WIDTH/2.00, 10.0, 0.20 + 0.5, 0.5, (3 * Math.PI) / 2, 0.0, enemyProjetil));
@@ -142,16 +157,6 @@ public static void main(String [] args)
 				pFlag = false;
 			}
 			
-			/*instanciando e desenhando estrelas */
-			for (Estrela estrela1 : estrelaPlano1) {
-				estrela1.mover();
-				estrela1.desenhar();
-			}
-
-			for (Estrela estrela2 : estrelaPlano2) {
-				estrela2.mover();
-				estrela2.desenhar();
-			}
 
 			/* chamada a display() da classe GameLib atualiza o desenho exibido pela interface do jogo. */
 			GameLib.display();
@@ -161,6 +166,39 @@ public static void main(String [] args)
 			/* faz uma pausa de modo que cada execução do laço do main loop demore aproximadamente 3 ms. */
 			busyWait(currentTime + 3);
 						
+
+
+			
+			/* spawn powerup */
+			if (currentTime > proximoPowerUp) {
+    			double x = Math.random() * (GameLib.WIDTH - 20) + 10;
+    			double y = 0;
+
+    		if (Math.random() < 0.5) /* 50% chance de aparecer */ {
+       		 powerUps.add(new PowerUpTiroRapido(x, y));
+    		} else {
+        		powerUps.add(new PowerUpInvulnerabilidade(x, y));
+   			}
+
+    			proximoPowerUp = currentTime + 10000; /* a cada 10 seg */
+			}
+
+			/* atualiza, desenha e aplica powerups  */
+			Iterator<PowerUp> itPower = powerUps.iterator();
+			while (itPower.hasNext()) {
+				PowerUp p = itPower.next();
+    				if (!p.atualizaEstado(delta, currentTime, GameLib.HEIGHT)) {
+        				itPower.remove();
+        				continue;
+    					}
+    					p.desenha(currentTime);
+    				if (p.colisao(player)) {
+        				p.aplicarEfeito(player, currentTime);
+       					itPower.remove();
+    				}
+			}
+
+
 		}
 
 		System.exit(0);
