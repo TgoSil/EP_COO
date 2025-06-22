@@ -7,13 +7,12 @@ public class Player extends Atores{
 	private Boolean invulneravel = false;
 	private double fimInvulneravel = 0;
 	
-	public Player(double x, double y, double vx, double vy, double raio, long proxTiro, LinkedList<Projetil> listaProjetil){
-		super(x, y, vx, vy);
+	public Player(double x, double y, double vx, double vy, double raio, long proxTiro, LinkedList<Projetil> listaProjeteis){
+		super(x, y, vx, vy, listaProjeteis);
 		this.proxTiro = proxTiro;
 		this.inicioExplosao = 0;
 		this.fimExplosao = 0;	
 		this.raio = raio;
-		this.listaProjeteis = listaProjetil;
 	}
 
 	public double getY(){
@@ -28,36 +27,22 @@ public class Player extends Atores{
 		return this.listaProjeteis;
 	}
 
-	//Colisões com atores
-	public void colision(long currentTime, LinkedList<Inimigos> ator) {
-		for (Inimigos aux : ator) {
-			double dx = aux.ponto.getX() - this.ponto.getX();
-			double dy = aux.ponto.getY() - this.ponto.getY();
+	public void colision(long currentTime, Atores ator) {
+			double dx = ator.ponto.getX() - this.ponto.getX();
+			double dy = ator.ponto.getY() - this.ponto.getY();
 			double dist = Math.sqrt(dx*dx + dy*dy);
 			
-			if (dist < (aux.raio + this.raio)) {
+			if (dist < (ator.raio + this.raio)) {
 				this.explodindo = true;
 				this.inicioExplosao = currentTime;
 				this.fimExplosao = currentTime + 500;
 				return;
 			}
 			
-			if (colision(aux.listaProjeteis, currentTime, 0.8)) return;
+			if (colision(ator.listaProjeteis, currentTime, 0.8)) return;
 		}
-		
-	}
 
-	/*   public void colision(long currentTime, LinkedList<Inimigos> inimigos){
-	for (Inimigos inimigo : inimigos){
 	
-	}
-	
-	}
-	
-	
-	*/
-
-
 	public void mover_Cima(long delta) {
 		ponto.setY(ponto.getY() - ponto.getvY()*delta);
 	}
@@ -92,7 +77,7 @@ public class Player extends Atores{
 			}
 	}
 
-	public boolean atualizaEstado(long deltaTime, long currentTime, LinkedList<Inimigos> inimigos) {
+	public boolean atualizaEstado(long deltaTime, long currentTime, LinkedList<Inimigos> inimigos, Boss boss) {
 
 		if (!explodindo) {
 			if(GameLib.iskeyPressed(GameLib.KEY_UP) && ponto.getY() > GameLib.HEIGHT*0.06) mover_Cima(deltaTime);
@@ -101,7 +86,12 @@ public class Player extends Atores{
 			if(GameLib.iskeyPressed(GameLib.KEY_RIGHT) && ponto.getX() < GameLib.WIDTH*0.95) mover_Direita(deltaTime);
 			if(GameLib.iskeyPressed(GameLib.KEY_CONTROL)) dispara(currentTime, 0.0);
 
-			if (!invulneravel) colision(currentTime, inimigos);
+			if (!invulneravel) {
+				if (boss != null) colision(currentTime, boss);
+				for (Inimigos ini : inimigos) {
+					colision(currentTime, ini);
+				}
+			}
 		}
 		
 		if(this.explodindo && currentTime>this.fimExplosao) {
@@ -117,10 +107,12 @@ public class Player extends Atores{
 		}
 
 		int aux = 0;
+
         for (Projetil projetilAux : this.listaProjeteis) {
-            if(!projetilAux.atualizaEstado(deltaTime, currentTime)) aux = 1;
-            projetilAux.desenha(currentTime);
+            if(!projetilAux.atualizaEstado(deltaTime, currentTime, boss)) aux = 1;
+			else projetilAux.desenha(currentTime);
         }
+
 		if(aux==1){
 			this.listaProjeteis.remove();
 		}

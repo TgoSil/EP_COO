@@ -1,0 +1,34 @@
+package classes;
+
+import java.util.LinkedList;
+
+abstract class Boss extends Inimigos{
+
+    protected double vida;
+
+    public Boss(double x, double y, double vx, double vy, double angulo, double vR, LinkedList<Projetil> listaProjeteis) {
+        super(x, y, vx, vy, angulo, vR, listaProjeteis);
+    }
+
+    @Override
+    public boolean colision(LinkedList<Projetil> projeteis, long currentTime, double c){
+    
+        for (Projetil projetil : projeteis) {
+            double dx = projetil.getX() - ponto.getX();
+            double dy = projetil.getY() - ponto.getY();
+            double dist = Math.sqrt(dx * dx + dy * dy);
+            
+            if(dist < ((this.raio + projetil.getRaio()) * c)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+	public abstract void dispara_alternativo(long currentTime, double playerY);
+
+    public abstract void desenha(long currentTime);
+
+    public abstract boolean atualizaEstado(long deltaTime, long currentTime, double PlayerY, LinkedList<Projetil> projetilInimigo);
+
+}
