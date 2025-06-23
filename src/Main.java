@@ -41,6 +41,10 @@ public static void main(String [] args)
 		estrelaPlano2.add(new EstrelaPlano2());
 		}
 
+		/*declaração dos powerups*/
+		LinkedList<PowerUp> powerUps = new LinkedList();
+		long proximoPowerUp = 0;	
+
 		/* variaveis de controle de spawn dos inimigos*/
 		long nextEnemy1 = currentTime + 2000;
 		long nextEnemy2 = currentTime + 7000;
@@ -53,22 +57,8 @@ public static void main(String [] args)
 		boolean iniFlag = false;
 		int iniIndex = -1;
 		
-		/*
-		 * 	BOSS 1 =====================================================================================================
-		 */
-
 		LinkedList<Projetil> projeteisBoss = new LinkedList();
 		Boss boss = null;
-		// Boss1(GameLib.WIDTH/2, GameLib.HEIGHT*0.15, 10, 10, 10, 10, projeteisBoss1);
-
-
-		/*
-		 * 	BOSS 1 =====================================================================================================
-		 */
-
-
-
-
 
 		/* iniciado interface gráfica */
 		GameLib.initGraphics();
@@ -159,13 +149,16 @@ public static void main(String [] args)
 				pFlag = false;
 			}
 
-			// if (GameLib.iskeyPressed(GameLib.KEY_DOWN) && boss == null) boss = new Boss1(GameLib.WIDTH/2, -600, 0.20, 0.05, (3 * Math.PI) / 2, 0.0, projeteisBoss, 200);
+		// --> Instancia Boss (!!Por enquanto ,Spawna um boss ao apertar a seta para baixo!!)
+			if (GameLib.iskeyPressed(GameLib.KEY_DOWN) && boss == null) boss = new Boss1(GameLib.WIDTH/2, -600, 0.20, 0.05, (3 * Math.PI) / 2, 0.0, projeteisBoss, 200);
+			
+			/* Gerencia boss */
 			if (boss != null) {
 				if (!boss.atualizaEstado(delta, currentTime, player.getY(), playerProjetil)) boss = null;
 				else boss.desenha(currentTime);
 			}
 
-			/* gerencia projeteis inimigos (atualiza, desenha e remove) */
+			/* gerencia projeteis de boss (atualiza, desenha e remove) */
 			for (Projetil p : projeteisBoss) {
 				if(!p.atualizaEstado(delta, currentTime, player)){
 					pFlag = true;
@@ -190,6 +183,36 @@ public static void main(String [] args)
 				estrela2.mover();
 				estrela2.desenhar();
 			}
+
+			/* spawn powerup */
+			if (currentTime > proximoPowerUp) {
+    			double x = Math.random() * (GameLib.WIDTH - 20) + 10;
+    			double y = 0;
+
+				if (Math.random() < 0.5) /* 50% chance de aparecer */ {
+				powerUps.add(new PowerUpTiroRapido(x, y));
+				} else {
+					powerUps.add(new PowerUpInvulnerabilidade(x, y));
+				}
+
+					proximoPowerUp = currentTime + 10000; /* a cada 10 seg */
+			}
+
+			/* atualiza, desenha e aplica powerups  */
+			Iterator<PowerUp> itPower = powerUps.iterator();
+			while (itPower.hasNext()) {
+				PowerUp p = itPower.next();
+    				if (!p.atualizaEstado(delta, currentTime, GameLib.HEIGHT)) {
+        				itPower.remove();
+        				continue;
+    					}
+    					p.desenha(currentTime);
+    				if (p.colisao(player)) {
+        				p.aplicarEfeito(player, currentTime);
+       					itPower.remove();
+    				}
+			}
+		
 
 			/* chamada a display() da classe GameLib atualiza o desenho exibido pela interface do jogo. */
 			GameLib.display();
