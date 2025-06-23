@@ -6,8 +6,9 @@ public abstract class Boss extends Inimigos{
 
     protected int vida;
 
-    public Boss(double x, double y, double vx, double vy, double angulo, double vR, LinkedList<Projetil> listaProjeteis) {
+    public Boss(double x, double y, double vx, double vy, double angulo, double vR, LinkedList<Projetil> listaProjeteis, int vida) {
         super(x, y, vx, vy, angulo, vR, listaProjeteis);
+        this.vida = vida;
     }
 
     @Override

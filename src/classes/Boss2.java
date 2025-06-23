@@ -5,11 +5,10 @@ import java.util.*;
 public class Boss2 extends Boss {
 	long descida;
 
-	public Boss2 (double x, double y, double vx, double vy, double angulo, double vR, LinkedList<Projetil> listaProjeteis){
-		super(x, y, vx, vy, angulo, vR, listaProjeteis);
+	public Boss2 (double x, double y, double vx, double vy, double angulo, double vR, LinkedList<Projetil> listaProjeteis, int vida){
+		super(x, y, vx, vy, angulo, vR, listaProjeteis, vida);
 		this.raio = 27.0;
 		this.ponto.setvX(0.25);
-        this.vida = 2500;
 	}
 
 	@Override
