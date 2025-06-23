@@ -107,73 +107,59 @@ public static void main(String [] args)
 			// 	inimigos.add(new Inimigo1(GameLib.WIDTH/2.00, 10.0, 0.20 + 0.5, 0.5, (3 * Math.PI) / 2, 0.0, enemyProjetil));
 			// }
 
-			// /*spawn inimigo 1 - VAI MUDAR QUANDO TIVER O SCRIPT*/
-			// if(currentTime > nextEnemy1){
-			// 	inimigos.add(new Inimigo1(Math.random() * (GameLib.WIDTH - 20.0) + 10.0, 10.0, 0.20 + Math.random() * 0.15, 0.20 + Math.random() * 0.15, (3 * Math.PI) / 2, 0.0, enemyProjetil));
-			// 	nextEnemy1 = currentTime +500;
-			// }
+			/*spawn inimigo 1 - VAI MUDAR QUANDO TIVER O SCRIPT*/
+			if(currentTime > nextEnemy1){
+				inimigos.add(new Inimigo1(Math.random() * (GameLib.WIDTH - 20.0) + 10.0, 10.0, 0.20 + Math.random() * 0.15, 0.20 + Math.random() * 0.15, (3 * Math.PI) / 2, 0.0, enemyProjetil));
+				nextEnemy1 = currentTime +500;
+			}
 
-			// /*spawn inimigo 2 - VAI MUDAR QUANDO TIVER O SCRIPT*/
-			// if(currentTime > nextEnemy2){
+			/*spawn inimigo 2 - VAI MUDAR QUANDO TIVER O SCRIPT*/
+			if(currentTime > nextEnemy2){
 				
-			// 	inimigos.add(new Inimigo2(enemy2_spawnX, -20, 0.42, 0.42, (3 * Math.PI) / 2, 0.0, enemyProjetil));
-			// 	enemy2_count++;
+				inimigos.add(new Inimigo2(enemy2_spawnX, -20, 0.42, 0.42, (3 * Math.PI) / 2, 0.0, enemyProjetil));
+				enemy2_count++;
 
-			// 	if(enemy2_count < 10){
+				if(enemy2_count < 10){
 						
-			// 		nextEnemy2 = currentTime + 120;
-			// 	}else {
+					nextEnemy2 = currentTime + 120;
+				}else {
 						
-			// 		enemy2_count = 0;
-			// 		enemy2_spawnX = Math.random() > 0.5 ? GameLib.WIDTH * 0.2 : GameLib.WIDTH * 0.8;
-			// 		nextEnemy2 = (long) (currentTime + 3000 + Math.random() * 3000);
-			// 	}
-			// }
+					enemy2_count = 0;
+					enemy2_spawnX = Math.random() > 0.5 ? GameLib.WIDTH * 0.2 : GameLib.WIDTH * 0.8;
+					nextEnemy2 = (long) (currentTime + 3000 + Math.random() * 3000);
+				}
+			}
 	
-			// /* gerencia inimigos */
-			// for (Inimigos ini : inimigos) {
-			// 	if(!ini.atualizaEstado(delta, currentTime, player.getY(), player.getProjeteis())){
-			// 		iniFlag = true;
-			// 		iniIndex = inimigos.indexOf(ini);
-			// 	}
-			// 	else ini.desenha(currentTime);
-			// }
-			// /* Deleta inimigo morto */
-			// if(iniFlag){
-			// 	inimigos.remove(iniIndex);
-			// 	iniFlag = false;
-			// }
+			/* gerencia inimigos */
+			for (Inimigos ini : inimigos) {
+				if(!ini.atualizaEstado(delta, currentTime, player.getY(), player.getProjeteis())){
+					iniFlag = true;
+					iniIndex = inimigos.indexOf(ini);
+				}
+				else ini.desenha(currentTime);
+			}
+			/* Deleta inimigo morto */
+			if(iniFlag){
+				inimigos.remove(iniIndex);
+				iniFlag = false;
+			}
 			
-			// /* gerencia projeteis inimigos (atualiza, desenha e remove) */
-			// for (Projetil p : enemyProjetil) {
-			// 	if(!p.atualizaEstado(delta, currentTime, player)){
-			// 		pFlag = true;
-			// 		pIndex = enemyProjetil.indexOf(p);
-			// 	}
-			// 	else p.desenha(currentTime);
-			// }
+			/* gerencia projeteis inimigos (atualiza, desenha e remove) */
+			for (Projetil p : enemyProjetil) {
+				if(!p.atualizaEstado(delta, currentTime, player)){
+					pFlag = true;
+					pIndex = enemyProjetil.indexOf(p);
+				}
+				else p.desenha(currentTime);
+			}
 			
-			// /* Deleta projétil fora da tela */
-			// if(pFlag){
-			// 	enemyProjetil.remove(pIndex);
-			// 	pFlag = false;
-			// }
+			/* Deleta projétil fora da tela */
+			if(pFlag){
+				enemyProjetil.remove(pIndex);
+				pFlag = false;
+			}
 
-			
-
-
-
-
-
-
-
-
-
-
-
-
-
-			if (GameLib.iskeyPressed(GameLib.KEY_DOWN) && boss == null) boss = new Boss1(GameLib.WIDTH/2, 150.0, 0.20 + Math.random() * 0.15, 0.20 + Math.random() * 0.15, (3 * Math.PI) / 2, 0.0, projeteisBoss);
+			// if (GameLib.iskeyPressed(GameLib.KEY_DOWN) && boss == null) boss = new Boss1(GameLib.WIDTH/2, -600, 0.20, 0.05, (3 * Math.PI) / 2, 0.0, projeteisBoss, 200);
 			if (boss != null) {
 				if (!boss.atualizaEstado(delta, currentTime, player.getY(), playerProjetil)) boss = null;
 				else boss.desenha(currentTime);
@@ -193,26 +179,6 @@ public static void main(String [] args)
 				projeteisBoss.remove(pIndex);
 				pFlag = false;
 			}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 			/*instanciando e desenhando estrelas */
 			for (Estrela estrela1 : estrelaPlano1) {
