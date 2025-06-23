@@ -103,54 +103,60 @@ public static void main(String [] args)
 				nextEnemy1 = currentTime +500;
 			}
 
-			/*spawn inimigo 2 - VAI MUDAR QUANDO TIVER O SCRIPT*/
-			if(currentTime > nextEnemy2){
+			// /*spawn inimigo 2 - VAI MUDAR QUANDO TIVER O SCRIPT*/
+			// if(currentTime > nextEnemy2){
 				
-				inimigos.add(new Inimigo2(enemy2_spawnX, -20, 0.42, 0.42, (3 * Math.PI) / 2, 0.0, enemyProjetil));
-				enemy2_count++;
+			// 	inimigos.add(new Inimigo2(enemy2_spawnX, -20, 0.42, 0.42, (3 * Math.PI) / 2, 0.0, enemyProjetil));
+			// 	enemy2_count++;
 
-				if(enemy2_count < 10){
+			// 	if(enemy2_count < 10){
 						
-					nextEnemy2 = currentTime + 120;
-				}else {
+			// 		nextEnemy2 = currentTime + 120;
+			// 	}else {
 						
-					enemy2_count = 0;
-					enemy2_spawnX = Math.random() > 0.5 ? GameLib.WIDTH * 0.2 : GameLib.WIDTH * 0.8;
-					nextEnemy2 = (long) (currentTime + 3000 + Math.random() * 3000);
-				}
-			}
+			// 		enemy2_count = 0;
+			// 		enemy2_spawnX = Math.random() > 0.5 ? GameLib.WIDTH * 0.2 : GameLib.WIDTH * 0.8;
+			// 		nextEnemy2 = (long) (currentTime + 3000 + Math.random() * 3000);
+			// 	}
+			// }
 	
-			/* gerencia inimigos */
-			for (Inimigos ini : inimigos) {
-				if(!ini.atualizaEstado(delta, currentTime, player.getY(), player.getProjeteis())){
-					iniFlag = true;
-					iniIndex = inimigos.indexOf(ini);
-				}
-				else ini.desenha(currentTime);
-			}
-			/* Deleta inimigo morto */
-			if(iniFlag){
-				inimigos.remove(iniIndex);
-				iniFlag = false;
-			}
+			// /* gerencia inimigos */
+			// for (Inimigos ini : inimigos) {
+			// 	if(!ini.atualizaEstado(delta, currentTime, player.getY(), player.getProjeteis())){
+			// 		iniFlag = true;
+			// 		iniIndex = inimigos.indexOf(ini);
+			// 	}
+			// 	else ini.desenha(currentTime);
+			// }
+			// /* Deleta inimigo morto */
+			// if(iniFlag){
+			// 	inimigos.remove(iniIndex);
+			// 	iniFlag = false;
+			// }
 			
-			/* gerencia projeteis inimigos (atualiza, desenha e remove) */
-			for (Projetil p : enemyProjetil) {
-				if(!p.atualizaEstado(delta, currentTime, player)){
-					pFlag = true;
-					pIndex = enemyProjetil.indexOf(p);
-				}
-				else p.desenha(currentTime);
-			}
+			// /* gerencia projeteis inimigos (atualiza, desenha e remove) */
+			// for (Projetil p : enemyProjetil) {
+			// 	if(!p.atualizaEstado(delta, currentTime, player)){
+			// 		pFlag = true;
+			// 		pIndex = enemyProjetil.indexOf(p);
+			// 	}
+			// 	else p.desenha(currentTime);
+			// }
 			
-			/* Deleta projétil fora da tela */
-			if(pFlag){
-				enemyProjetil.remove(pIndex);
-				pFlag = false;
-			}
+			// /* Deleta projétil fora da tela */
+			// if(pFlag){
+			// 	enemyProjetil.remove(pIndex);
+			// 	pFlag = false;
+			// }
 
 		// --> Instancia Boss (!!Por enquanto ,Spawna um boss ao apertar a seta para baixo!!)
-			if (GameLib.iskeyPressed(GameLib.KEY_DOWN) && boss == null) boss = new Boss1(GameLib.WIDTH/2, -600, 0.20, 0.05, (3 * Math.PI) / 2, 0.0, projeteisBoss, 200);
+			if (GameLib.iskeyPressed(GameLib.KEY_DOWN) && boss == null) {
+				boolean random = Math.random() < 0.5;
+				boss = random ? 
+				new Boss1(GameLib.WIDTH/2, -600, 0.20, 0.05, (3 * Math.PI) / 2, 0.0, projeteisBoss, 200)
+				:
+				new Boss2(GameLib.WIDTH/2, -600, .8, 0.3, (3 * Math.PI) / 2, 0.0, projeteisBoss, 200);;
+			}
 			
 			/* Gerencia boss */
 			if (boss != null) {
