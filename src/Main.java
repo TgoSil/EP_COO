@@ -155,7 +155,7 @@ public static void main(String [] args)
 				boss = random ? 
 				new Boss1(GameLib.WIDTH/2, -600, 0.20, 0.05, (3 * Math.PI) / 2, 0.0, projeteisBoss, 200)
 				:
-				new Boss2(GameLib.WIDTH/2, -600, .8, 0.3, (3 * Math.PI) / 2, 0.0, projeteisBoss, 200);;
+				new Boss2(GameLib.WIDTH/2, -600, .8, 0.3, (3 * Math.PI) / 2, 0.0, projeteisBoss, 500);
 			}
 			
 			/* Gerencia boss */
