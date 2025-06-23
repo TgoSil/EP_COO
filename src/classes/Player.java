@@ -7,6 +7,10 @@ public class Player extends Atores{
 	private Boolean invulneravel = false;
 	private double fimInvulneravel = 0;
 	
+	/*atributos para os buffs */
+	private boolean tiroRapidoAtivo = false;
+	private long fimTiroRapido = 0;
+
 	public Player(double x, double y, double vx, double vy, double raio, long proxTiro, LinkedList<Projetil> listaProjeteis){
 		super(x, y, vx, vy, listaProjeteis);
 		this.proxTiro = proxTiro;
@@ -15,6 +19,10 @@ public class Player extends Atores{
 		this.raio = raio;
 	}
 
+	public double getX(){
+		return this.ponto.getX();
+	}
+	
 	public double getY(){
 		return this.ponto.getY();
 	}
@@ -58,10 +66,10 @@ public class Player extends Atores{
 
 	@Override
 	public void dispara(long currentTime, double limitador) {
-		
-		if(currentTime > this.proxTiro && !invulneravel){				
+		long cooldown = tiroRapidoAtivo ? 40 : 100; /*adicionei essa parte para atirar mais rapido, quando tem o buff*/
+		if(currentTime > this.proxTiro){				
 			this.listaProjeteis.add(new Projetilplayer(this.ponto.getX(), this.ponto.getY()-2*this.raio, 0.0, -1.0));
-			this.proxTiro = currentTime + 100;
+			this.proxTiro = currentTime + cooldown;
 		}
 	}
 
@@ -118,8 +126,24 @@ public class Player extends Atores{
 			this.listaProjeteis.remove();
 		}
 
-		return true;
+		/*para atirar rapido*/
+		if (tiroRapidoAtivo && currentTime > fimTiroRapido) {
+    		tiroRapidoAtivo = false;
+		}
 
+		return true;
+	}
+
+		/*adicionar método atirarrapido */
+	public void ativarTiroRapido(long currentTime, long duracao) {
+    	this.tiroRapidoAtivo = true;
+    	this.fimTiroRapido = currentTime + duracao;
+	}
+
+	/*adicionar método setInvulneravel*/
+	public void setInvulneravel(long currentTime, long duracao) {
+    	this.invulneravel = true;
+    	this.fimInvulneravel = currentTime + duracao;
 	}
 	
 }
