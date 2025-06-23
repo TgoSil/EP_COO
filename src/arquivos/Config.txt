@@ -1,0 +1,4 @@
+3
+2
+arquivos/Fase1.txt
+arquivos/Fase2.txt
