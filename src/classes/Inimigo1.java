@@ -10,6 +10,18 @@ public class Inimigo1 extends Inimigos {
 	}
 
 	@Override
+	public void dispara(long currentTime, double playerY){
+		
+		if(currentTime > this.proxTiro && this.ponto.getY() < playerY){
+				
+			this.listaProjeteis.add(new ProjetilInimigo(this.ponto.getX(), this.ponto.getY(), Math.cos(this.angulo)*0.45, Math.sin(this.angulo)*0.45*(-1.0)));
+								
+			this.proxTiro = (long) (currentTime + 200 + Math.random() * 500);
+
+		}
+	}
+
+	@Override
     public void desenha(long currentTime){
 
         if(this.explodindo){	

@@ -26,7 +26,7 @@ public abstract class Projetil{
 
     public abstract void desenha(long currentTime);
 
-    public abstract boolean atualizaEstado(long deltaTime, long currentTime);
+    public abstract boolean atualizaEstado(long deltaTime, long currentTime, Atores ator);
 
 }
 
@@ -50,13 +50,21 @@ class Projetilplayer extends Projetil{
     }
 
     @Override
-    public boolean atualizaEstado(long deltaTime, long currentTime){
+    public boolean atualizaEstado(long deltaTime, long currentTime, Atores boss){
         double y = this.ponto.getY() + this.ponto.getvY() * deltaTime;
         double x = this.ponto.getX() + this.ponto.getvX() * deltaTime;
-        if(y < 0 || x > GameLib.WIDTH || x < 0) return false;
+        
+        if (boss != null) {
+            double dx = x - boss.ponto.getX();
+            double dy = y - boss.ponto.getY();
+            double dist = Math.sqrt(dx*dx + dy*dy);
+
+            if (dist <= boss.raio || y < 0 || x > GameLib.WIDTH || x < 0) return false;
+        } 
+        
         this.ponto.setX(x);
         this.ponto.setY(y);
-        
+
 	    return true;
     }
 
@@ -79,16 +87,48 @@ class ProjetilInimigo extends Projetil{
 	}
 
     @Override
-    public boolean atualizaEstado(long deltaTime, long currentTime){
+    public boolean atualizaEstado(long deltaTime, long currentTime, Atores player){
         double y = this.ponto.getY() + this.ponto.getvY() * deltaTime;
         double x = this.ponto.getX() + this.ponto.getvX() * deltaTime;
-        if(y > GameLib.HEIGHT || x > GameLib.WIDTH || x < 0) return false;
+
+        double dx = x - player.ponto.getX();
+        double dy = y - player.ponto.getY();
+        double dist = Math.sqrt(dx*dx + dy*dy);
+
+        if(y > GameLib.HEIGHT || x > GameLib.WIDTH || x < 0 || dist < player.raio*0.8) return false;
+
         this.ponto.setX(x);
         this.ponto.setY(y);
+
 	    return true;
     }
-
-
-
 }
 
+
+class ProjetilBoss2 extends Projetil{
+        long sumir;
+
+    protected ProjetilBoss2 (double x, double y, double vx, double vy, long currentTime){
+        super(x, y, vx, vy);
+        this.sumir = currentTime + 12500;
+        this.raio = 4.0;
+    }
+    
+    @Override
+    public void desenha(long currentTime)
+    {
+		GameLib.setColor(Color.ORANGE);
+		GameLib.drawCircle(ponto.getX(), ponto.getY(), this.raio);
+	}
+
+    @Override
+    public boolean atualizaEstado(long deltaTime, long currentTime, Atores player){
+        double y = this.ponto.getY() + this.ponto.getvY() * deltaTime;
+        double x = this.ponto.getX() + this.ponto.getvX() * deltaTime;
+        if(x > GameLib.WIDTH || x < 0) this.ponto.setvX(this.ponto.getvX() * -1); //Altera a direção do ataque 2
+        if(y > GameLib.HEIGHT || y < 0) this.ponto.setvY(this.ponto.getvY() * -1); 
+        this.ponto.setX(x);
+        this.ponto.setY(y);
+        return currentTime < this.sumir;
+    }
+}

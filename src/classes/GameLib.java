@@ -102,6 +102,16 @@ public class GameLib {
 		g.drawOval(x, y, width, height);
 	}
 	
+	public static void drawSemiCircle(double cx, double cy, double radius){
+	
+	int x = (int) Math.round(cx - radius);
+	int y = (int) Math.round(cy - radius);
+	int width = (int) Math.round(2 * radius);
+	int height = (int) Math.round(2 * radius);
+	
+	g.drawArc(x, y, width, height, -180, 180);
+	}
+	
 	public static void drawDiamond(double x, double y, double radius){
 		
 		int x1 = (int) Math.round(x);
@@ -122,6 +132,23 @@ public class GameLib {
 		drawLine(x4, y4, x1, y1);
 	}
 	
+	/* NÃO SEI SE SERÁ PERMITIDO */
+	public static void drawTriangle(double x, double y, double radius) {
+
+		int x1 = (int) Math.round(x);
+		int y1 = (int) Math.round(y - radius);
+		
+		int x2 = (int) Math.round(x + radius);
+		int y2 = (int) Math.round(y + radius*0.75);
+		
+		int x3 = (int) Math.round(x - radius);
+		int y3 = (int) Math.round(y + radius*0.75);
+
+		drawLine(x1, y1, x2, y2);
+		drawLine(x2, y2, x3, y3);
+		drawLine(x3, y3, x1, y1);
+	}
+
 	public static void drawPlayer(double player_X, double player_Y, double player_size){
 		
 		GameLib.drawLine(player_X - player_size, player_Y + player_size, player_X, player_Y - player_size);

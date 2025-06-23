@@ -12,11 +12,11 @@ public abstract class Atores{
 
 	// construtor
 
-	public Atores (double x, double y, double vx, double vy){
+	public Atores (double x, double y, double vx, double vy, LinkedList<Projetil> listaProjeteis){
     	this.ponto = new Ponto2D(x, y, vx, vy);
-    	// this.listaProjeteis = new LinkedList<>();
     	this.explodindo = false;   
 		this.proxTiro = 0;
+		this.listaProjeteis = listaProjeteis;
 	}
 
 	public boolean getExplodindo(){
@@ -39,7 +39,7 @@ public abstract class Atores{
                 return explodindo;
             }
         }
-		return explodindo;
+		return false;
 	}
     
 	public abstract void dispara(long currentTime, double limitador);
