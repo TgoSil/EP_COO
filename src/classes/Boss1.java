@@ -22,8 +22,8 @@ public class Boss1 extends Boss{
         super(x, y, vx, vy, angulo, vR, listaProjeteis, vida);
         this.raio = 90.0;
         this.vida = vida;
-        this.escudoVida = 0; //vida*3;
-        this.escudoRecarga = 0;// vida*2;
+        this.escudoVida = vida*3;
+        this.escudoRecarga = vida*2;
     }
 
     // Método de disparo do Estado 1
