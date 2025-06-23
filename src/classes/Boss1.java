@@ -22,8 +22,8 @@ public class Boss1 extends Boss{
         super(x, y, vx, vy, angulo, vR, listaProjeteis, vida);
         this.raio = 90.0;
         this.vida = vida;
-        this.escudoVida = vida*3;
-        this.escudoRecarga = vida*2;
+        this.escudoVida = 0; //vida*3;
+        this.escudoRecarga = 0;// vida*2;
     }
 
     // Método de disparo do Estado 1
@@ -149,7 +149,10 @@ public class Boss1 extends Boss{
                 // "Animação" de entrada do Boss
                 if (this.ponto.getY() < GameLib.HEIGHT*0.2) this.ponto.setY(this.ponto.getY() + this.ponto.getvY() * deltaTime * (0.8));
                 // Faz o boss não sair da tela no eixo X
-                if (ponto.getX() + 90 >= GameLib.WIDTH || ponto.getX() - 90 <= 0) ponto.setvX(ponto.getvX() * (-1));
+                if (ponto.getX() + 90 >= GameLib.WIDTH || ponto.getX() - 90 <= 0) {
+                    ponto.setvX(ponto.getvX() * (-1));
+                    ponto.setX(ponto.getX() + ponto.getvX() * deltaTime * 3); // Evita BUG do boss travar nas bordas
+                }
                 dispara(currentTime, PlayerY);
             }
             
@@ -180,7 +183,10 @@ public class Boss1 extends Boss{
                 // Movimentação e Disparo - ESTADO 2
                 ponto.setX(ponto.getX() + ponto.getvX() * deltaTime * 2);
                 // Faz o boss não sair da tela no eixo X
-                if (ponto.getX() + 90 >= GameLib.WIDTH || ponto.getX() - 90 <= 0) ponto.setvX(ponto.getvX() * (-1));
+                if (ponto.getX() + 90 >= GameLib.WIDTH || ponto.getX() - 90 <= 0) {
+                    ponto.setvX(ponto.getvX() * (-1));
+                    ponto.setX(ponto.getX() + ponto.getvX() * deltaTime * 3); // Evita BUG do boss travar nas bordas
+                }
                 dispara_alternativo(currentTime, PlayerY); 
             }
         }
