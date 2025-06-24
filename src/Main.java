@@ -50,7 +50,7 @@ public static void main(String [] args)
 					long tempo = fase.nextLong();
 					double auxX = fase.nextDouble();
 					double auxY = fase.nextDouble();
-					fases[i].add(new Instancia(instancia, tipo, vida, currentTime + tempo, auxX, auxY));
+					fases[i].add(new Instancia(instancia, tipo, vida, tempo, auxX, auxY));
 				}
 			}
 			
@@ -58,6 +58,7 @@ public static void main(String [] args)
 			System.err.println("Arquivo não encontrado: " + e.getMessage());
 		}
 		int faseAtual = 0;
+		long inicioFase = currentTime;
 
 		/*declaração das variáveis player */
 		// coordenada x, coordenada y, velocidade no eixo x, velocidade no eixo y, raio do player, tempo do próximo tiro.
@@ -91,6 +92,7 @@ public static void main(String [] args)
 		int enemy2_count = 0;
 		double enemy2_spawnX = GameLib.WIDTH * 0.20;
 		Instancia ini2 = new Instancia("", -1, -1, -1, -1.0, -1.0);
+		boolean instanciaFlag = true;
 
 		boolean pFlag = false;
 		int pIndex = -1;
@@ -141,10 +143,11 @@ public static void main(String [] args)
 	
 			/*Spawn de Inimigos e Bosses*/
 			if(instanciaAux.getInstancia().equals("INIMIGO")){
-				if(currentTime > instanciaAux.getTempo()){
+				if(currentTime > inicioFase + instanciaAux.getTempo() && instanciaFlag==true){
 					if(instanciaAux.getTipo()==1){
 						inimigos.add(new Inimigo1(instanciaAux.getX(), instanciaAux.getY(), 0.20 + Math.random() * 0.15, 0.20 + Math.random() * 0.15, (3 * Math.PI) / 2, 0.0, enemyProjetil));
 						if(faseIterador.hasNext()) instanciaAux = faseIterador.next();
+						else instanciaFlag = false;
 					}else{
 						inimigos.add(new Inimigo2(instanciaAux.getX(), instanciaAux.getY(), 0.42, 0.42, (3 * Math.PI) / 2, 0.0, enemyProjetil));
 			 			enemy2_count++;
@@ -152,15 +155,20 @@ public static void main(String [] args)
 						ini2Flag = true;
 						ini2 = instanciaAux;
 						if(faseIterador.hasNext()) instanciaAux = faseIterador.next();
+						else instanciaFlag = false;
 					}
 				}
 			}//Neste if spawnamos inimigos 1 ou 2
 			else{
-				if(currentTime > instanciaAux.getTempo() && boss == null){
+				if(currentTime > inicioFase + instanciaAux.getTempo() && boss == null && instanciaFlag==true){
 					if(instanciaAux.getTipo() == 1){
 						boss = new Boss1(instanciaAux.getX(), instanciaAux.getY(), 0.20, 0.05, (3 * Math.PI) / 2, 0.0, projeteisBoss, instanciaAux.getVida());
+						if(faseIterador.hasNext()) instanciaAux = faseIterador.next();
+						else instanciaFlag = false;
 					}else {
 						boss = new Boss2(instanciaAux.getX(), instanciaAux.getY(), .8, 0.3, (3 * Math.PI) / 2, 0.0, projeteisBoss, instanciaAux.getVida());
+						if(faseIterador.hasNext()) instanciaAux = faseIterador.next();
+						else instanciaFlag = false;
 					}
 				}
 			}//Neste else spawnamos o Boss 1 ou 2
@@ -215,9 +223,14 @@ public static void main(String [] args)
 					boss = null;
 					//Passando para a próxima fase ou finalizando o jogo
 					faseAtual++;
-					if(faseAtual < qtdFases) faseIterador = fases[faseAtual].iterator();
+					if(faseAtual < qtdFases){
+						faseIterador = fases[faseAtual].iterator();
+						inicioFase = currentTime;
+						instanciaFlag = true;
+					}
 					else running = false;
 					if(faseIterador.hasNext()) instanciaAux = faseIterador.next();
+					else instanciaFlag = false;
 				}
 				else boss.desenha(currentTime);
 			}
