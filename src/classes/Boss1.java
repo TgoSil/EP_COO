@@ -3,6 +3,8 @@ import java.awt.Color;
 import java.util.*;
 
 public class Boss1 extends Boss{
+    private double vidainicial;
+    private double escudovidainicial;
 
     private boolean estado = true; // True = Estado 1 & False == Estado 2
 
@@ -24,6 +26,8 @@ public class Boss1 extends Boss{
         this.vida = vida;
         this.escudoVida = vida*3;
         this.escudoRecarga = vida*2;
+        this.vidainicial = vida;
+        this.escudovidainicial = escudoVida;
     }
 
     // Método de disparo do Estado 1
@@ -103,19 +107,27 @@ public class Boss1 extends Boss{
                 GameLib.drawCircle(this.ponto.getX(), this.ponto.getY()+this.raio*0.6, this.raio*0.125);
                 if (escudoVida % 2 == 1) GameLib.setColor(Color.GREEN); // Alterna cores para gerar feedback visual de dado no escudo
                 GameLib.drawSemiCircle(ponto.getX(), ponto.getY(), this.raio);
+                GameLib.setColor(Color.BLUE);
+		        GameLib.fillRect(GameLib.WIDTH*0.5, GameLib.HEIGHT*0.05, 300 * (this.escudoVida/ escudovidainicial) , 10);
             }
-            else {
+            else  //Estado 2
+            {
                 GameLib.setColor(Color.RED);
                 GameLib.drawTriangle(this.ponto.getX(), this.ponto.getY(), this.raio*0.64);
                 if (vida % 2 == 0) GameLib.setColor(Color.YELLOW); // Alterna cores para gerar feedback visual de dado no boss
                 GameLib.drawCircle(this.ponto.getX(), this.ponto.getY()+this.raio*0.78, this.raio*0.16);
+                GameLib.setColor(Color.GREEN);
+		        GameLib.fillRect(GameLib.WIDTH*0.5, GameLib.HEIGHT*0.05, 300 * (this.vida/ vidainicial) , 10);//Vida 
+			
             }
-        }
-        else {
+            }
+        else 
+        {
             double alpha = (currentTime - this.inicioExplosao) / (this.fimExplosao - this.inicioExplosao);
             GameLib.drawExplosion(this.ponto.getX(), this.ponto.getY(), alpha);
         }
     }
+    
 
     @Override
     public boolean atualizaEstado(long deltaTime, long currentTime, double PlayerY, LinkedList<Projetil> projetilPlayer) {        
