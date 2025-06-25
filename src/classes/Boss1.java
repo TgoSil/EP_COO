@@ -3,9 +3,8 @@ import java.awt.Color;
 import java.util.*;
 
 public class Boss1 extends Boss{
-    private double vidainicial;
+    
     private double escudovidainicial;
-
     private boolean estado = true; // True = Estado 1 & False == Estado 2
 
     private int escudoVida;
@@ -99,6 +98,7 @@ public class Boss1 extends Boss{
     @Override
     public void desenha(long currentTime) {
        if (!explodindo) {
+            desenhabarra();
             if (estado) {
                 // Desenha Estado 1
                 GameLib.setColor(Color.RED);
@@ -107,18 +107,13 @@ public class Boss1 extends Boss{
                 GameLib.drawCircle(this.ponto.getX(), this.ponto.getY()+this.raio*0.6, this.raio*0.125);
                 if (escudoVida % 2 == 1) GameLib.setColor(Color.GREEN); // Alterna cores para gerar feedback visual de dado no escudo
                 GameLib.drawSemiCircle(ponto.getX(), ponto.getY(), this.raio);
-                GameLib.setColor(Color.BLUE);
-		        GameLib.fillRect(GameLib.WIDTH*0.5, GameLib.HEIGHT*0.05, 300 * (this.escudoVida/ escudovidainicial) , 10);
             }
             else  //Estado 2
             {
                 GameLib.setColor(Color.RED);
                 GameLib.drawTriangle(this.ponto.getX(), this.ponto.getY(), this.raio*0.64);
                 if (vida % 2 == 0) GameLib.setColor(Color.YELLOW); // Alterna cores para gerar feedback visual de dado no boss
-                GameLib.drawCircle(this.ponto.getX(), this.ponto.getY()+this.raio*0.78, this.raio*0.16);
-                GameLib.setColor(Color.GREEN);
-		        GameLib.fillRect(GameLib.WIDTH*0.5, GameLib.HEIGHT*0.05, 300 * (this.vida/ vidainicial) , 10);//Vida 
-			
+                GameLib.drawCircle(this.ponto.getX(), this.ponto.getY()+this.raio*0.78, this.raio*0.16);          
             }
             }
         else 
@@ -127,7 +122,18 @@ public class Boss1 extends Boss{
             GameLib.drawExplosion(this.ponto.getX(), this.ponto.getY(), alpha);
         }
     }
-    
+    @Override
+    public void desenhabarra()
+    {
+        if (estado) {
+            GameLib.setColor(Color.BLUE);
+            GameLib.fillRect(GameLib.WIDTH*0.5, GameLib.HEIGHT*0.05, 300 * (this.escudoVida/ escudovidainicial) , 10);
+        }
+        else {
+            GameLib.setColor(Color.GREEN);
+            GameLib.fillRect(GameLib.WIDTH*0.5, GameLib.HEIGHT*0.05, 300 * (this.vida/ vidainicial) , 10); //Vida 
+        }
+    }
 
     @Override
     public boolean atualizaEstado(long deltaTime, long currentTime, double PlayerY, LinkedList<Projetil> projetilPlayer) {        

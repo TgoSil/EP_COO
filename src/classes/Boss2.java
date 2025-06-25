@@ -3,8 +3,7 @@ import java.awt.Color;
 import java.util.*;
 
 public class Boss2 extends Boss {
-	double vidainicial; //Tem que ser double para o cálculo da vida do Boss2 pois fica paia divisão de inteiros
-	boolean ataque3 = true;
+
 	public Boss2 (double x, double y, double vx, double vy, double angulo, double vR, LinkedList<Projetil> listaProjeteis, int vida){
 		super(x, y, vx, vy, angulo, vR, listaProjeteis, vida);
 		this.raio = 27.0;
@@ -15,20 +14,29 @@ public class Boss2 extends Boss {
 	@Override
     public void desenha(long currentTime){
 
-        if(this.explodindo){	
+        if(this.explodindo)
+		{	
 			double alpha = (currentTime - this.inicioExplosao) / (this.fimExplosao - this.inicioExplosao);
 			GameLib.drawExplosion(this.ponto.getX(), this.ponto.getY(), alpha);
-		}else{
+		}
+		else
+		{
+			desenhabarra();
 			GameLib.setColor(Color.RED);
 			GameLib.drawCircle(this.ponto.getX(), this.ponto.getY(), this.raio);
-			GameLib.setColor(Color.GREEN);
-			{ 
-				GameLib.fillRect(GameLib.WIDTH*0.5, GameLib.HEIGHT*0.05, 300 * (this.vida/ vidainicial) , 10);//
-			}
-			
+			if (vida % 2 == 0) GameLib.setColor(Color.YELLOW);
+			GameLib.drawCircle(this.ponto.getX(), this.ponto.getY(), this.raio);
+				
 		}
 
     }
+
+	@Override
+    public void desenhabarra()
+    {
+		GameLib.setColor(Color.GREEN);
+		GameLib.fillRect(GameLib.WIDTH*0.5, GameLib.HEIGHT*0.05, 300 * (this.vida/ vidainicial) , 10);
+	}
 
 	@Override
 	public boolean colision(LinkedList<Projetil> projeteis, long currentTime, double c){

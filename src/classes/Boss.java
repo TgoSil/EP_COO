@@ -5,6 +5,7 @@ import java.util.LinkedList;
 public abstract class Boss extends Inimigos{
 
     protected int vida; 
+    protected double vidainicial;
 
     public Boss(double x, double y, double vx, double vy, double angulo, double vR, LinkedList<Projetil> listaProjeteis, int vida) {
         super(x, y, vx, vy, angulo, vR, listaProjeteis);
@@ -27,7 +28,7 @@ public abstract class Boss extends Inimigos{
     }
 
     public abstract void desenha(long currentTime);
-
+    public abstract void desenhabarra();
     public abstract boolean atualizaEstado(long deltaTime, long currentTime, double PlayerY, LinkedList<Projetil> projetilInimigo);
 
 }
