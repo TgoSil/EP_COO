@@ -153,5 +153,5 @@ public class Player extends Atores{
     	this.invulneravel = true;
     	this.fimInvulneravel = currentTime + duracao;
 	}
-	
+
 }

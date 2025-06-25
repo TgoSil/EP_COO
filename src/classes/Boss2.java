@@ -108,5 +108,4 @@ public class Boss2 extends Boss {
 		
 		return true;
     }
-
 }
