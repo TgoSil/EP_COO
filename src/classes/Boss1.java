@@ -4,11 +4,11 @@ import java.util.*;
 
 public class Boss1 extends Boss{
     
-    private double escudovidainicial;
+    
     private boolean estado = true; // True = Estado 1 & False == Estado 2
 
     private int escudoVida;
-    private int escudoRecarga; // Qtd de vida que o escudo receberá após ser RECRIADO
+    private double escudovidainicial;
     private long recriarEscudoTime; // Tempo para RECRIAR o escudo após ele ser QUEBRADO
 
     private boolean recarregando = false; // Momento de espera entre sequencias de disparos - para o jogador ter um "descanso"
@@ -24,8 +24,6 @@ public class Boss1 extends Boss{
         this.raio = 90.0;
         this.vida = vida;
         this.escudoVida = vida*3;
-        this.escudoRecarga = vida*2;
-        this.vidainicial = vida;
         this.escudovidainicial = escudoVida;
     }
 
@@ -193,7 +191,7 @@ public class Boss1 extends Boss{
 
                 if (currentTime > recriarEscudoTime) {
                     // Se a vida não acabar, em 10s o boss voltará para o Estado 1 (representado por true)
-                    escudoVida = escudoRecarga;
+                    escudoVida = (int) (escudovidainicial/3)*2;
                     estado = true;
                     raio = 90.0;
                 }

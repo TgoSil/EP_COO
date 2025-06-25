@@ -40,10 +40,10 @@ public class Inimigo1 extends Inimigos {
 		this.ponto.setY(this.ponto.getY() + this.ponto.getvY() * deltaTime * (0.8));
 		this.angulo += this.vR*deltaTime;
 
-		if (!explodindo) colision(projetilInimigo, currentTime, 1.0);				
-
-		dispara(currentTime, playerY);
-
+		if (!explodindo) {
+			colision(projetilInimigo, currentTime, 1.0);				
+			dispara(currentTime, playerY);
+		}
 		if(this.explodindo && currentTime>this.fimExplosao) {
 			this.explodindo = false;
 			return false;

@@ -75,7 +75,7 @@ public class Inimigo2 extends Inimigos {
 			this.shootNow = true;
 		}
 
-		dispara(currentTime, 0.0);
+		if (!explodindo) dispara(currentTime, 0.0);
 
 		if(this.explodindo && currentTime>this.fimExplosao) {
 			this.explodindo = false;
