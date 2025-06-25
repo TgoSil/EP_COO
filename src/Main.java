@@ -132,7 +132,7 @@ public static void main(String [] args)
 			currentTime = System.currentTimeMillis();
 
 			/* Métodos de player */
-			player.atualizaEstado(delta, currentTime, inimigos, boss);
+			player.atualizaEstado(delta, currentTime, inimigos, enemyProjetil, boss, projeteisBoss);
 			player.desenha(currentTime);
 
 			// TESTE DA SITUAÇÃO PROBLEMA MUITO ESPECIFICA
