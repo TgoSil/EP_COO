@@ -45,5 +45,3 @@ public abstract class Atores{
 	public abstract void dispara(long currentTime, double limitador);
 		
 }
-
-

@@ -6,17 +6,19 @@ public class Player extends Atores{
 
 	private Boolean invulneravel = false;
 	private double fimInvulneravel = 0;
+	private int vida;
 	
 	/*atributos para os buffs */
 	private boolean tiroRapidoAtivo = false;
 	private long fimTiroRapido = 0;
 
-	public Player(double x, double y, double vx, double vy, double raio, long proxTiro, LinkedList<Projetil> listaProjeteis){
+	public Player(double x, double y, double vx, double vy, double raio, long proxTiro, int vida, LinkedList<Projetil> listaProjeteis){
 		super(x, y, vx, vy, listaProjeteis);
 		this.proxTiro = proxTiro;
 		this.inicioExplosao = 0;
 		this.fimExplosao = 0;	
 		this.raio = raio;
+		this.vida = vida;
 	}
 
 	public double getX(){
@@ -25,6 +27,10 @@ public class Player extends Atores{
 	
 	public double getY(){
 		return this.ponto.getY();
+	}
+	
+	public double getVida(){
+		return this.vida;
 	}
 
 	public boolean getInvulneravel(){
@@ -35,7 +41,7 @@ public class Player extends Atores{
 		return this.listaProjeteis;
 	}
 
-	public void colision(long currentTime, Atores ator) {
+	public void colisionAtores(long currentTime, Atores ator) {
 			double dx = ator.ponto.getX() - this.ponto.getX();
 			double dy = ator.ponto.getY() - this.ponto.getY();
 			double dist = Math.sqrt(dx*dx + dy*dy);
@@ -46,8 +52,7 @@ public class Player extends Atores{
 				this.fimExplosao = currentTime + 500;
 				return;
 			}
-			
-			if (colision(ator.listaProjeteis, currentTime, 0.8)) return;
+		
 		}
 
 	
@@ -85,7 +90,7 @@ public class Player extends Atores{
 			}
 	}
 
-	public boolean atualizaEstado(long deltaTime, long currentTime, LinkedList<Inimigos> inimigos, Boss boss) {
+	public boolean atualizaEstado(long deltaTime, long currentTime, LinkedList<Inimigos> inimigos, LinkedList<Projetil> projeteis_inimigos, Boss boss, LinkedList<Projetil> projeteis_boss) {
 
 		if (!explodindo) {
 			if(GameLib.iskeyPressed(GameLib.KEY_UP) && ponto.getY() > GameLib.HEIGHT*0.06) mover_Cima(deltaTime);
@@ -96,14 +101,17 @@ public class Player extends Atores{
 
 
 			if (!invulneravel) {
-				if (boss != null) colision(currentTime, boss);
+				if (boss != null) colisionAtores(currentTime, boss);
 				for (Inimigos ini : inimigos) {
-					colision(currentTime, ini);
+					colisionAtores(currentTime, ini);
 				}
+				colision(projeteis_boss, currentTime, 0.8);
+				colision(projeteis_inimigos, currentTime, 0.8);
 			}
 		}
 		
 		if(this.explodindo && currentTime>this.fimExplosao) {
+			this.vida--;
 			this.explodindo = false;
 			this.invulneravel = true;
 			this.fimInvulneravel = currentTime + 2000;
@@ -145,5 +153,5 @@ public class Player extends Atores{
     	this.invulneravel = true;
     	this.fimInvulneravel = currentTime + duracao;
 	}
-	
+
 }

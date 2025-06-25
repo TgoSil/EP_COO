@@ -110,7 +110,7 @@ class ProjetilBoss2 extends Projetil{
 
     protected ProjetilBoss2 (double x, double y, double vx, double vy, long currentTime){
         super(x, y, vx, vy);
-        this.sumir = currentTime + 12500;
+        this.sumir = currentTime + 25000;
         this.raio = 4.0;
     }
     

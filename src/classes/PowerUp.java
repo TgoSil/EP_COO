@@ -2,7 +2,7 @@ package classes;
 
 
 /*Classe Power Ups que implementa a interface Entidade e será usada no PowerUps de Invulnerabilidade e TiroRapido */
-public abstract class PowerUp {
+public abstract class PowerUp { //To achando q n implementa a interface Entidade bro
     protected Ponto2D ponto;
     protected double raio = 10.0;
 

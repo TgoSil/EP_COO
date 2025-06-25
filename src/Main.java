@@ -1,4 +1,5 @@
 import classes.*;
+import java.io.*;
 import java.util.*;
 
 public class Main {
@@ -19,15 +20,56 @@ public static void main(String [] args)
 		/* variáveis usadas no controle de tempo efetuado no main loop */
 		long delta;
 		long currentTime = System.currentTimeMillis();
+		
+		/* leitura do arquivo de configuração das fases */
+		//Inicia variáveis que serão usadas na leitura dentro do bloco try
+		String configPath = "arquivos/Config.txt";
+		int playerVida = -1;
+		int qtdFases = -1;
+		LinkedList<Instancia>[] fases = new LinkedList[1];
+		try{
+			
+			File configFile = new File(configPath);
+			Scanner config = new Scanner(configFile);
+			
+			playerVida = config.nextInt();
+			qtdFases = config.nextInt();
+			fases = new LinkedList[qtdFases]; 
+			
+			for(int i=0; i<qtdFases; i++){
+				String fasePath = config.next();
+				File faseFile = new File(fasePath);
+				Scanner fase = new Scanner(faseFile);
+				fases[i] = new LinkedList();
+				while(fase.hasNextLine()){
+					String instancia = fase.next();
+					int tipo = fase.nextInt();
+					int vida = -1;
+					if(instancia.equals("INIMIGO")) vida = -1;
+					else vida = fase.nextInt();
+					long tempo = fase.nextLong();
+					double auxX = fase.nextDouble();
+					double auxY = fase.nextDouble();
+					fases[i].add(new Instancia(instancia, tipo, vida, tempo, auxX, auxY));
+				}
+			}
+			
+		}catch(FileNotFoundException e){
+			System.err.println("Arquivo não encontrado: " + e.getMessage());
+		}
+		int faseAtual = 0;
+		long inicioFase = currentTime;
 
 		/*declaração das variáveis player */
 		// coordenada x, coordenada y, velocidade no eixo x, velocidade no eixo y, raio do player, tempo do próximo tiro.
 		LinkedList<Projetil> playerProjetil = new LinkedList();
-		Player player = new Player(GameLib.WIDTH / 2, GameLib.HEIGHT * 0.90, 0.25, 0.25, 12.0, currentTime, playerProjetil); 
+		Player player = new Player(GameLib.WIDTH / 2, GameLib.HEIGHT * 0.90, 0.25, 0.25, 12.0, currentTime, playerVida, playerProjetil); 
 	
 		/*declaracao da  lista de inimigos e projetil*/
 		LinkedList<Inimigos> inimigos = new LinkedList();
 		LinkedList<Projetil> enemyProjetil = new LinkedList();
+		Iterator<Instancia> faseIterador = fases[faseAtual].iterator();
+		Instancia instanciaAux = faseIterador.next();
 		
 		/*declaração e inicialização das estrelas */
 		ArrayList<Estrela> estrelaPlano1 = new ArrayList<>();
@@ -46,15 +88,17 @@ public static void main(String [] args)
 		long proximoPowerUp = 0;	
 
 		/* variaveis de controle de spawn dos inimigos*/
-		long nextEnemy1 = currentTime + 2000;
-		long nextEnemy2 = currentTime + 7000;
+		long nextEnemy2 = 0;
 		int enemy2_count = 0;
 		double enemy2_spawnX = GameLib.WIDTH * 0.20;
+		Instancia ini2 = new Instancia("", -1, -1, -1, -1.0, -1.0);
+		boolean instanciaFlag = true;
 
 		boolean pFlag = false;
 		int pIndex = -1;
 		
 		boolean iniFlag = false;
+		boolean ini2Flag = false;
 		int iniIndex = -1;
 		
 		LinkedList<Projetil> projeteisBoss = new LinkedList();
@@ -88,7 +132,7 @@ public static void main(String [] args)
 			currentTime = System.currentTimeMillis();
 
 			/* Métodos de player */
-			player.atualizaEstado(delta, currentTime, inimigos, boss);
+			player.atualizaEstado(delta, currentTime, inimigos, enemyProjetil, boss, projeteisBoss);
 			player.desenha(currentTime);
 
 			// TESTE DA SITUAÇÃO PROBLEMA MUITO ESPECIFICA
@@ -96,71 +140,98 @@ public static void main(String [] args)
 			// 	inimigos.add(new Inimigo1(GameLib.WIDTH/2.00, 10.0, 0.20 + 0.5, 0.5, (3 * Math.PI) / 2, 0.0, enemyProjetil));
 			// 	inimigos.add(new Inimigo1(GameLib.WIDTH/2.00, 10.0, 0.20 + 0.5, 0.5, (3 * Math.PI) / 2, 0.0, enemyProjetil));
 			// }
-
-			/*spawn inimigo 1 - VAI MUDAR QUANDO TIVER O SCRIPT*/
-			if(currentTime > nextEnemy1){
-				inimigos.add(new Inimigo1(Math.random() * (GameLib.WIDTH - 20.0) + 10.0, 10.0, 0.20 + Math.random() * 0.15, 0.20 + Math.random() * 0.15, (3 * Math.PI) / 2, 0.0, enemyProjetil));
-				nextEnemy1 = currentTime +500;
-			}
-
-			// /*spawn inimigo 2 - VAI MUDAR QUANDO TIVER O SCRIPT*/
-			// if(currentTime > nextEnemy2){
-				
-			// 	inimigos.add(new Inimigo2(enemy2_spawnX, -20, 0.42, 0.42, (3 * Math.PI) / 2, 0.0, enemyProjetil));
-			// 	enemy2_count++;
-
-			// 	if(enemy2_count < 10){
-						
-			// 		nextEnemy2 = currentTime + 120;
-			// 	}else {
-						
-			// 		enemy2_count = 0;
-			// 		enemy2_spawnX = Math.random() > 0.5 ? GameLib.WIDTH * 0.2 : GameLib.WIDTH * 0.8;
-			// 		nextEnemy2 = (long) (currentTime + 3000 + Math.random() * 3000);
-			// 	}
-			// }
 	
-			// /* gerencia inimigos */
-			// for (Inimigos ini : inimigos) {
-			// 	if(!ini.atualizaEstado(delta, currentTime, player.getY(), player.getProjeteis())){
-			// 		iniFlag = true;
-			// 		iniIndex = inimigos.indexOf(ini);
-			// 	}
-			// 	else ini.desenha(currentTime);
-			// }
-			// /* Deleta inimigo morto */
-			// if(iniFlag){
-			// 	inimigos.remove(iniIndex);
-			// 	iniFlag = false;
-			// }
-			
-			// /* gerencia projeteis inimigos (atualiza, desenha e remove) */
-			// for (Projetil p : enemyProjetil) {
-			// 	if(!p.atualizaEstado(delta, currentTime, player)){
-			// 		pFlag = true;
-			// 		pIndex = enemyProjetil.indexOf(p);
-			// 	}
-			// 	else p.desenha(currentTime);
-			// }
-			
-			// /* Deleta projétil fora da tela */
-			// if(pFlag){
-			// 	enemyProjetil.remove(pIndex);
-			// 	pFlag = false;
-			// }
+			/*Spawn de Inimigos e Bosses*/
+			if(instanciaAux.getInstancia().equals("INIMIGO")){
+				if(currentTime > inicioFase + instanciaAux.getTempo() && instanciaFlag==true){
+					if(instanciaAux.getTipo()==1){
+						inimigos.add(new Inimigo1(instanciaAux.getX(), instanciaAux.getY(), 0.20 + Math.random() * 0.15, 0.20 + Math.random() * 0.15, (3 * Math.PI) / 2, 0.0, enemyProjetil));
+						if(faseIterador.hasNext()) instanciaAux = faseIterador.next();
+						else instanciaFlag = false;
+					}else{
+						inimigos.add(new Inimigo2(instanciaAux.getX(), instanciaAux.getY(), 0.42, 0.42, (3 * Math.PI) / 2, 0.0, enemyProjetil));
+			 			enemy2_count++;
+						nextEnemy2 = currentTime + 120;
+						ini2Flag = true;
+						ini2 = instanciaAux;
+						if(faseIterador.hasNext()) instanciaAux = faseIterador.next();
+						else instanciaFlag = false;
+					}
+				}
+			}//Neste if spawnamos inimigos 1 ou 2
+			else{
+				if(currentTime > inicioFase + instanciaAux.getTempo() && boss == null && instanciaFlag==true){
+					if(instanciaAux.getTipo() == 1){
+						boss = new Boss1(instanciaAux.getX(), instanciaAux.getY(), 0.20, 0.05, (3 * Math.PI) / 2, 0.0, projeteisBoss, instanciaAux.getVida());
+						if(faseIterador.hasNext()) instanciaAux = faseIterador.next();
+						else instanciaFlag = false;
+					}else {
+						boss = new Boss2(instanciaAux.getX(), instanciaAux.getY(), .8, 0.3, (3 * Math.PI) / 2, 0.0, projeteisBoss, instanciaAux.getVida());
+						if(faseIterador.hasNext()) instanciaAux = faseIterador.next();
+						else instanciaFlag = false;
+					}
+				}
+			}//Neste else spawnamos o Boss 1 ou 2
 
-		// --> Instancia Boss (!!Por enquanto ,Spawna um boss ao apertar a seta para baixo!!)
-			if (GameLib.iskeyPressed(GameLib.KEY_DOWN) && boss == null) {
-				boolean random = Math.random() < 0.5;
-				boss = random ? 
-				new Boss1(GameLib.WIDTH/2, -600, 0.20, 0.05, (3 * Math.PI) / 2, 0.0, projeteisBoss, 200)
-				:
-				new Boss2(GameLib.WIDTH/2, -600, .8, 0.3, (3 * Math.PI) / 2, 0.0, projeteisBoss, 200);;
+			//Spawn de inimigo 2 é tratado de forma pouco diferente, já que deve continuar spawnando suas cópias até que 10 delas tenham sido feitas
+			if(currentTime > nextEnemy2 && ini2Flag){
+				
+			 	inimigos.add(new Inimigo2(ini2.getX(), ini2.getY(), 0.42, 0.42, (3 * Math.PI) / 2, 0.0, enemyProjetil));
+			 	enemy2_count++;
+
+			 	if(enemy2_count < 10){
+						
+			 		nextEnemy2 = currentTime + 120;
+			 	}else {
+						
+			 		enemy2_count = 0;
+					ini2Flag = false;
+			 	}
+			}
+	
+			/* gerencia inimigos */
+			for (Inimigos ini : inimigos) {
+			 	if(!ini.atualizaEstado(delta, currentTime, player.getY(), player.getProjeteis())){
+			 		iniFlag = true;
+			 		iniIndex = inimigos.indexOf(ini);
+			 	}
+			 	else ini.desenha(currentTime);
+			}
+			 /* Deleta inimigo morto */
+			if(iniFlag){
+			 	inimigos.remove(iniIndex);
+			 	iniFlag = false;
 			}
 			
+			/* gerencia projeteis inimigos (atualiza, desenha e remove) */
+			for (Projetil p : enemyProjetil) {
+			 	if(!p.atualizaEstado(delta, currentTime, player)){
+			 		pFlag = true;
+			 		pIndex = enemyProjetil.indexOf(p);
+			 	}
+			 	else p.desenha(currentTime);
+			}
+			/* Deleta projétil fora da tela */
+			if(pFlag){
+			 	enemyProjetil.remove(pIndex);
+			 	pFlag = false;
+			}
+
 			/* Gerencia boss */
 			if (boss != null) {
-				if (!boss.atualizaEstado(delta, currentTime, player.getY(), playerProjetil)) boss = null;
+				if (!boss.atualizaEstado(delta, currentTime, player.getY(), playerProjetil)){
+					boss = null;
+					//Passando para a próxima fase ou finalizando o jogo
+					faseAtual++;
+					if(faseAtual < qtdFases){
+						faseIterador = fases[faseAtual].iterator();
+						inicioFase = currentTime;
+						instanciaFlag = true;
+					}
+					else running = false;
+					if(faseIterador.hasNext()) instanciaAux = faseIterador.next();
+					else instanciaFlag = false;
+				}
 				else boss.desenha(currentTime);
 			}
 
@@ -223,7 +294,9 @@ public static void main(String [] args)
 			/* chamada a display() da classe GameLib atualiza o desenho exibido pela interface do jogo. */
 			GameLib.display();
 
+            /*Finaliza o jogo caso Esc seja pressionado ou caso o player zere as vidas*/
 			if(GameLib.iskeyPressed(GameLib.KEY_ESCAPE)) running = false;
+			if(player.getVida() == 0) running = false;
 
 			/* faz uma pausa de modo que cada execução do laço do main loop demore aproximadamente 3 ms. */
 			busyWait(currentTime + 3);

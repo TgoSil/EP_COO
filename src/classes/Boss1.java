@@ -3,11 +3,12 @@ import java.awt.Color;
 import java.util.*;
 
 public class Boss1 extends Boss{
-
+    
+    
     private boolean estado = true; // True = Estado 1 & False == Estado 2
 
     private int escudoVida;
-    private int escudoRecarga; // Qtd de vida que o escudo receberá após ser RECRIADO
+    private double escudovidainicial;
     private long recriarEscudoTime; // Tempo para RECRIAR o escudo após ele ser QUEBRADO
 
     private boolean recarregando = false; // Momento de espera entre sequencias de disparos - para o jogador ter um "descanso"
@@ -23,7 +24,7 @@ public class Boss1 extends Boss{
         this.raio = 90.0;
         this.vida = vida;
         this.escudoVida = vida*3;
-        this.escudoRecarga = vida*2;
+        this.escudovidainicial = escudoVida;
     }
 
     // Método de disparo do Estado 1
@@ -95,6 +96,7 @@ public class Boss1 extends Boss{
     @Override
     public void desenha(long currentTime) {
        if (!explodindo) {
+            desenhabarra();
             if (estado) {
                 // Desenha Estado 1
                 GameLib.setColor(Color.RED);
@@ -104,16 +106,30 @@ public class Boss1 extends Boss{
                 if (escudoVida % 2 == 1) GameLib.setColor(Color.GREEN); // Alterna cores para gerar feedback visual de dado no escudo
                 GameLib.drawSemiCircle(ponto.getX(), ponto.getY(), this.raio);
             }
-            else {
+            else  //Estado 2
+            {
                 GameLib.setColor(Color.RED);
                 GameLib.drawTriangle(this.ponto.getX(), this.ponto.getY(), this.raio*0.64);
                 if (vida % 2 == 0) GameLib.setColor(Color.YELLOW); // Alterna cores para gerar feedback visual de dado no boss
-                GameLib.drawCircle(this.ponto.getX(), this.ponto.getY()+this.raio*0.78, this.raio*0.16);
+                GameLib.drawCircle(this.ponto.getX(), this.ponto.getY()+this.raio*0.78, this.raio*0.16);          
             }
-        }
-        else {
+            }
+        else 
+        {
             double alpha = (currentTime - this.inicioExplosao) / (this.fimExplosao - this.inicioExplosao);
             GameLib.drawExplosion(this.ponto.getX(), this.ponto.getY(), alpha);
+        }
+    }
+    @Override
+    public void desenhabarra()
+    {
+        if (estado) {
+            GameLib.setColor(Color.BLUE);
+            GameLib.fillRect(GameLib.WIDTH*0.5, GameLib.HEIGHT*0.05, 300 * (this.escudoVida/ escudovidainicial) , 10);
+        }
+        else {
+            GameLib.setColor(Color.GREEN);
+            GameLib.fillRect(GameLib.WIDTH*0.5, GameLib.HEIGHT*0.05, 300 * (this.vida/ vidainicial) , 10); //Vida 
         }
     }
 
@@ -175,7 +191,7 @@ public class Boss1 extends Boss{
 
                 if (currentTime > recriarEscudoTime) {
                     // Se a vida não acabar, em 10s o boss voltará para o Estado 1 (representado por true)
-                    escudoVida = escudoRecarga;
+                    escudoVida = (int) (escudovidainicial/3)*2;
                     estado = true;
                     raio = 90.0;
                 }
