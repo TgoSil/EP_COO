@@ -45,7 +45,7 @@ public static void main(String [] args)
 					String instancia = fase.next();
 					int tipo = fase.nextInt();
 					int vida = -1;
-					if(instancia.equals("INIMIGO")) vida = -1;
+					if(instancia.equals("INIMIGO")||instancia.equals("POWERUP")) vida = -1;
 					else vida = fase.nextInt();
 					long tempo = fase.nextLong();
 					double auxX = fase.nextDouble();
@@ -55,7 +55,7 @@ public static void main(String [] args)
 			}
 			
 		}catch(FileNotFoundException e){
-			System.err.println("Arquivo não encontrado: " + e.getMessage());
+			System.err.println("Arquivo não encontrado.");
 		}
 		int faseAtual = 0;
 		long inicioFase = currentTime;
@@ -85,12 +85,10 @@ public static void main(String [] args)
 
 		/*declaração dos powerups*/
 		LinkedList<PowerUp> powerUps = new LinkedList();
-		long proximoPowerUp = 0;	
 
 		/* variaveis de controle de spawn dos inimigos*/
 		long nextEnemy2 = 0;
 		int enemy2_count = 0;
-		double enemy2_spawnX = GameLib.WIDTH * 0.20;
 		Instancia ini2 = new Instancia("", -1, -1, -1, -1.0, -1.0);
 		boolean instanciaFlag = true;
 
@@ -159,7 +157,7 @@ public static void main(String [] args)
 					}
 				}
 			}//Neste if spawnamos inimigos 1 ou 2
-			else{
+			else if(instanciaAux.getInstancia().equals("CHEFE")){
 				if(currentTime > inicioFase + instanciaAux.getTempo() && boss == null && instanciaFlag==true){
 					if(instanciaAux.getTipo() == 1){
 						boss = new Boss1(instanciaAux.getX(), instanciaAux.getY(), 0.20, 0.05, (3 * Math.PI) / 2, 0.0, projeteisBoss, instanciaAux.getVida());
@@ -171,7 +169,20 @@ public static void main(String [] args)
 						else instanciaFlag = false;
 					}
 				}
-			}//Neste else spawnamos o Boss 1 ou 2
+			}//Neste else if spawnamos o Boss 1 ou 2
+			else if(instanciaAux.getInstancia().equals("POWERUP")){
+				if (currentTime > inicioFase + instanciaAux.getTempo() && instanciaFlag==true) {
+
+					if(instanciaAux.getTipo()==1){
+						powerUps.add(new PowerUpTiroRapido(instanciaAux.getX(), instanciaAux.getY()));
+					} else {
+						powerUps.add(new PowerUpInvulnerabilidade(instanciaAux.getX(), instanciaAux.getY()));
+					}
+					
+					if(faseIterador.hasNext()) instanciaAux = faseIterador.next();
+					else instanciaFlag = false;
+				}
+			}//Neste else if spawnamos o PowerUp 1 ou 2
 
 			//Spawn de inimigo 2 é tratado de forma pouco diferente, já que deve continuar spawnando suas cópias até que 10 delas tenham sido feitas
 			if(currentTime > nextEnemy2 && ini2Flag){
@@ -259,20 +270,6 @@ public static void main(String [] args)
 			for (Estrela estrela2 : estrelaPlano2) {
 				estrela2.mover();
 				estrela2.desenhar();
-			}
-
-			/* spawn powerup */
-			if (currentTime > proximoPowerUp) {
-    			double x = Math.random() * (GameLib.WIDTH - 20) + 10;
-    			double y = 0;
-
-				if (Math.random() < 0.5) /* 50% chance de aparecer */ {
-				powerUps.add(new PowerUpTiroRapido(x, y));
-				} else {
-					powerUps.add(new PowerUpInvulnerabilidade(x, y));
-				}
-
-					proximoPowerUp = currentTime + 10000; /* a cada 10 seg */
 			}
 
 			/* atualiza, desenha e aplica powerups  */
